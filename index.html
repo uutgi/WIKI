@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wikipedia Multilingue</title>
+    <title>Wikipedia Global Research Tool</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,12 +15,14 @@
             --primary: #1a73e8;
             --primary-dark: #1557b0;
             --success: #34a853;
+            --warning: #fbbc04;
             --error: #ea4335;
-            --bg: #f8f9fa;
+            --bg: #f0f2f5;
             --card-bg: #ffffff;
             --text: #202124;
             --text-secondary: #5f6368;
             --border: #dadce0;
+            --hover-bg: #f8f9fa;
         }
 
         body {
@@ -28,279 +30,507 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
+            padding: 20px;
         }
 
+        /* Header */
         header {
             text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #4285f4 100%);
+            color: white;
             margin-bottom: 30px;
         }
 
         header h1 {
             font-size: 2rem;
-            color: var(--text);
             margin-bottom: 8px;
+            font-weight: 600;
         }
 
         header p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+            opacity: 0.9;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search */
+        .search-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
         }
 
         .search-box {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
         }
 
         .search-input {
             flex: 1;
-            padding: 14px 18px;
-            font-size: 1rem;
+            padding: 16px 20px;
+            font-size: 1.1rem;
             border: 2px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .search-input:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
         }
 
         .search-btn {
-            padding: 14px 28px;
+            padding: 16px 32px;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            white-space: nowrap;
         }
 
         .search-btn:hover {
             background: var(--primary-dark);
+            transform: translateY(-1px);
         }
 
         .search-btn:disabled {
-            background: var(--text-secondary);
+            background: #9aa0a6;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .status {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
+        /* Loading */
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
             border-radius: 50%;
-            background: var(--success);
+            animation: spin 0.8s linear infinite;
+            display: none;
         }
 
-        .status.loading {
-            background: var(--error);
-            animation: pulse 1s infinite;
+        .loading .loader {
+            display: block;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .loading .btn-text {
+            display: none;
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress */
+        .progress-section {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-section.visible {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 3px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Cards */
         .card {
             background: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            overflow: hidden;
         }
 
-        .result-header {
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
             flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .language-badge {
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Wikidata section */
+        .wikidata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .wikidata-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: var(--hover-bg);
+            border-radius: 8px;
+        }
+
+        .wikidata-icon {
+            width: 36px;
+            height: 36px;
             background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .wikidata-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wikidata-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .wikidata-value {
+            font-size: 0.95rem;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .wikidata-value a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .wikidata-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Image */
+        .entity-image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        /* Languages section */
+        .languages-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .lang-count-badge {
+            background: var(--success);
             color: white;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .lang-count {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .summary {
-            line-height: 1.7;
-            color: var(--text);
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .summary::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .summary::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .translations-title {
-            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text);
         }
 
-        .translations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .translation-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .translation-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .translation-lang {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-
-        .translation-title {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            word-break: break-word;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-        }
-
-        .no-results h3 {
-            margin-bottom: 10px;
-            color: var(--error);
-        }
-
-        .error-message {
-            background: #fce8e6;
-            color: var(--error);
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .settings-toggle {
-            background: none;
-            border: 1px solid var(--border);
+        .action-btn {
             padding: 8px 16px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            background: white;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-
-        .settings-toggle:hover {
-            background: var(--bg);
-        }
-
-        .settings-panel {
-            display: none;
-            margin-bottom: 20px;
-        }
-
-        .settings-panel.open {
-            display: block;
-        }
-
-        .language-checkboxes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .language-checkboxes label {
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
-            background: var(--bg);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
         }
 
-        .language-checkboxes input:checked + span {
+        .action-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary);
             color: var(--primary);
-            font-weight: 500;
         }
 
-        .hidden {
-            display: none;
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
-        .copy-btn {
-            background: none;
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Language items */
+        .language-item {
             border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .language-item:hover {
+            border-color: var(--primary);
+        }
+
+        .language-item.expanded {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .language-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--hover-bg);
+            transition: background 0.2s;
+        }
+
+        .language-header:hover {
+            background: #e8eaed;
+        }
+
+        .expand-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .language-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .lang-code {
+            background: var(--text);
+            color: white;
             padding: 4px 10px;
             border-radius: 4px;
-            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .lang-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lang-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .lang-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .char-count {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            margin-left: 10px;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            flex-shrink: 0;
         }
 
-        .copy-btn:hover {
-            background: var(--bg);
+        .language-content {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: white;
         }
 
-        .copy-btn.copied {
-            background: var(--success);
+        .language-item.expanded .language-content {
+            display: block;
+        }
+
+        .language-summary {
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .language-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .small-btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .small-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Filter/Sort */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            padding: 16px 24px;
+            background: var(--hover-bg);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .filter-bar select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-bar input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-results h3 {
+            font-size: 1.3rem;
+            color: var(--error);
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: var(--text-secondary);
+        }
+
+        /* Copy notification */
+        .copy-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text);
             color: white;
-            border-color: var(--success);
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            z-index: 1000;
         }
 
+        .copy-notification.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Footer */
         footer {
             text-align: center;
-            margin-top: 30px;
+            padding: 30px;
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         footer a {
@@ -308,7 +538,12 @@
             text-decoration: none;
         }
 
+        /* Responsive */
         @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
             .search-box {
                 flex-direction: column;
             }
@@ -317,309 +552,736 @@
                 justify-content: center;
             }
 
-            .result-header {
+            .wikidata-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .translations-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .header-actions {
+                width: 100%;
+            }
+
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-bar input[type="text"] {
+                min-width: unset;
             }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Wikipedia Global Research Tool</h1>
+        <p>Busca un tema y obtén información de TODOS los idiomas de Wikipedia. Combina conocimiento de todo el mundo.</p>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>Wikipedia Multilingue</h1>
-            <p>Busca articulos en 9 idiomas y encuentra traducciones</p>
-        </header>
-
-        <div class="search-box">
-            <input
-                type="text"
-                id="searchInput"
-                class="search-input"
-                placeholder="Escribe un termino de busqueda..."
-                autocomplete="off"
-            >
-            <button id="searchBtn" class="search-btn">
-                <span class="status" id="status"></span>
-                Buscar
-            </button>
-        </div>
-
-        <button class="settings-toggle" id="settingsToggle">Configurar idiomas</button>
-
-        <div class="settings-panel card" id="settingsPanel">
-            <div class="language-checkboxes" id="languageCheckboxes"></div>
-        </div>
-
-        <div id="errorContainer"></div>
-
-        <div id="resultCard" class="card hidden">
-            <div class="result-header">
-                <div>
-                    <span class="language-badge" id="detectedLang"></span>
-                    <button class="copy-btn" id="copyBtn">Copiar titulo</button>
-                </div>
-                <span class="lang-count" id="langCount"></span>
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Escribe un nombre, lugar, concepto..."
+                    autocomplete="off"
+                >
+                <button id="searchBtn" class="search-btn">
+                    <span class="loader"></span>
+                    <span class="btn-text">Buscar en todos los idiomas</span>
+                </button>
             </div>
-            <div class="summary" id="summary"></div>
+            <div class="progress-section" id="progressSection">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Iniciando búsqueda...</div>
+            </div>
         </div>
 
-        <div id="translationsCard" class="card hidden">
-            <h3 class="translations-title">Traducciones disponibles</h3>
-            <div class="translations-grid" id="translationsGrid"></div>
+        <!-- Wikidata Section -->
+        <div class="card hidden" id="wikidataCard">
+            <div class="card-header">
+                <h2>📊 Datos Unificados</h2>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Fuente: Wikidata</span>
+            </div>
+            <div class="card-body">
+                <img id="entityImage" class="entity-image hidden" alt="">
+                <div class="wikidata-grid" id="wikidataGrid"></div>
+            </div>
         </div>
 
-        <div id="noResults" class="card no-results hidden">
-            <h3>Sin resultados</h3>
-            <p>No se encontraron articulos para este termino. Intenta con otra busqueda.</p>
+        <!-- Languages Section -->
+        <div class="card hidden" id="languagesCard">
+            <div class="card-header">
+                <div class="languages-header">
+                    <h2>📚 Información por Idioma <span class="lang-count-badge" id="langCountBadge">0</span></h2>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn" id="expandAllBtn">Expandir todo</button>
+                    <button class="action-btn" id="collapseAllBtn">Colapsar todo</button>
+                    <button class="action-btn primary" id="copyAllBtn">📋 Copiar todo</button>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <label>Ordenar por:</label>
+                <select id="sortSelect">
+                    <option value="length-desc">Más información primero</option>
+                    <option value="length-asc">Menos información primero</option>
+                    <option value="alpha">Alfabético (idioma)</option>
+                </select>
+                <input type="text" id="filterInput" placeholder="Filtrar idiomas...">
+            </div>
+            <div class="card-body" id="languagesList"></div>
         </div>
 
-        <footer>
-            <p>Datos de <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></p>
-        </footer>
+        <!-- No Results -->
+        <div class="card hidden" id="noResultsCard">
+            <div class="no-results">
+                <h3>No se encontraron resultados</h3>
+                <p>Intenta con otro término de búsqueda. Prueba nombres propios, lugares, conceptos...</p>
+            </div>
+        </div>
     </div>
 
+    <!-- Copy Notification -->
+    <div class="copy-notification" id="copyNotification">
+        ✓ Copiado al portapapeles
+    </div>
+
+    <footer>
+        <p>Datos de <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a> y <a href="https://www.wikidata.org" target="_blank">Wikidata</a></p>
+    </footer>
+
     <script>
-        // Configuration
-        const ALL_LANGUAGES = {
-            'en': 'English',
-            'es': 'Espanol',
-            'fr': 'Francais',
-            'de': 'Deutsch',
-            'it': 'Italiano',
-            'pt': 'Portugues',
-            'el': 'Ellinika',
-            'la': 'Latina',
-            'ca': 'Catala'
-        };
+        // ============ STATE ============
+        let currentData = null;
+        let allLanguagesData = [];
 
-        // State
-        let selectedLanguages = Object.keys(ALL_LANGUAGES);
-        let currentResults = null;
-
-        // DOM Elements
+        // ============ DOM ELEMENTS ============
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
-        const status = document.getElementById('status');
-        const settingsToggle = document.getElementById('settingsToggle');
-        const settingsPanel = document.getElementById('settingsPanel');
-        const languageCheckboxes = document.getElementById('languageCheckboxes');
-        const errorContainer = document.getElementById('errorContainer');
-        const resultCard = document.getElementById('resultCard');
-        const detectedLang = document.getElementById('detectedLang');
-        const copyBtn = document.getElementById('copyBtn');
-        const langCount = document.getElementById('langCount');
-        const summary = document.getElementById('summary');
-        const translationsCard = document.getElementById('translationsCard');
-        const translationsGrid = document.getElementById('translationsGrid');
-        const noResults = document.getElementById('noResults');
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const wikidataCard = document.getElementById('wikidataCard');
+        const wikidataGrid = document.getElementById('wikidataGrid');
+        const entityImage = document.getElementById('entityImage');
+        const languagesCard = document.getElementById('languagesCard');
+        const langCountBadge = document.getElementById('langCountBadge');
+        const languagesList = document.getElementById('languagesList');
+        const noResultsCard = document.getElementById('noResultsCard');
+        const sortSelect = document.getElementById('sortSelect');
+        const filterInput = document.getElementById('filterInput');
+        const expandAllBtn = document.getElementById('expandAllBtn');
+        const collapseAllBtn = document.getElementById('collapseAllBtn');
+        const copyAllBtn = document.getElementById('copyAllBtn');
+        const copyNotification = document.getElementById('copyNotification');
 
-        // Initialize language checkboxes
-        function initLanguageCheckboxes() {
-            languageCheckboxes.innerHTML = Object.entries(ALL_LANGUAGES).map(([code, name]) => `
-                <label>
-                    <input type="checkbox" value="${code}" checked>
-                    <span>${name}</span>
-                </label>
-            `).join('');
+        // ============ WIKIDATA PROPERTIES ============
+        const WIKIDATA_PROPS = {
+            'P31': { label: 'Tipo', icon: '🏷️' },
+            'P569': { label: 'Nacimiento', icon: '🎂' },
+            'P570': { label: 'Fallecimiento', icon: '✝️' },
+            'P19': { label: 'Lugar de nacimiento', icon: '📍' },
+            'P20': { label: 'Lugar de fallecimiento', icon: '📍' },
+            'P27': { label: 'Nacionalidad', icon: '🌍' },
+            'P106': { label: 'Ocupación', icon: '💼' },
+            'P800': { label: 'Obras notables', icon: '📖' },
+            'P26': { label: 'Cónyuge', icon: '💑' },
+            'P22': { label: 'Padre', icon: '👨' },
+            'P25': { label: 'Madre', icon: '👩' },
+            'P40': { label: 'Hijos', icon: '👶' },
+            'P69': { label: 'Educación', icon: '🎓' },
+            'P108': { label: 'Empleador', icon: '🏢' },
+            'P166': { label: 'Premios', icon: '🏆' },
+            'P17': { label: 'País', icon: '🏳️' },
+            'P131': { label: 'Ubicación', icon: '📍' },
+            'P625': { label: 'Coordenadas', icon: '🗺️' },
+            'P571': { label: 'Fecha de fundación', icon: '📅' },
+            'P112': { label: 'Fundador', icon: '👤' },
+            'P159': { label: 'Sede', icon: '🏛️' },
+            'P856': { label: 'Sitio web', icon: '🌐' },
+            'P18': { label: 'Imagen', icon: '🖼️' }
+        };
 
-            languageCheckboxes.querySelectorAll('input').forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    selectedLanguages = Array.from(languageCheckboxes.querySelectorAll('input:checked'))
-                        .map(cb => cb.value);
-                });
-            });
-        }
-
-        // Toggle settings panel
-        settingsToggle.addEventListener('click', () => {
-            settingsPanel.classList.toggle('open');
-        });
-
-        // Search function
+        // ============ MAIN SEARCH ============
         async function search() {
             const term = searchInput.value.trim();
-            if (!term) {
-                showError('Por favor, escribe un termino de busqueda.');
-                return;
-            }
-
-            if (selectedLanguages.length === 0) {
-                showError('Selecciona al menos un idioma.');
-                return;
-            }
+            if (!term) return;
 
             setLoading(true);
-            hideAll();
-            clearError();
+            hideAllCards();
+            showProgress();
 
+            try {
+                // Step 1: Search and find the entity
+                updateProgress(5, 'Buscando artículo...');
+                const searchResult = await searchWikipedia(term);
+
+                if (!searchResult) {
+                    showNoResults();
+                    return;
+                }
+
+                // Step 2: Get Wikidata entity
+                updateProgress(15, 'Obteniendo datos de Wikidata...');
+                const wikidataId = await getWikidataId(searchResult.lang, searchResult.title);
+
+                let wikidataEntity = null;
+                if (wikidataId) {
+                    wikidataEntity = await getWikidataEntity(wikidataId);
+                }
+
+                // Step 3: Get all available languages
+                updateProgress(25, 'Descubriendo idiomas disponibles...');
+                const langLinks = await getLanguageLinks(searchResult.lang, searchResult.title);
+
+                // Add the original language
+                langLinks[searchResult.lang] = searchResult.title;
+
+                const totalLangs = Object.keys(langLinks).length;
+                updateProgress(30, `Encontrados ${totalLangs} idiomas. Cargando contenido...`);
+
+                // Step 4: Fetch summaries from all languages in parallel batches
+                const langEntries = Object.entries(langLinks);
+                const batchSize = 10;
+                const allResults = [];
+
+                for (let i = 0; i < langEntries.length; i += batchSize) {
+                    const batch = langEntries.slice(i, i + batchSize);
+                    const batchResults = await Promise.all(
+                        batch.map(([lang, title]) => fetchSummary(lang, title))
+                    );
+                    allResults.push(...batchResults);
+
+                    const progress = 30 + Math.round((i / langEntries.length) * 60);
+                    updateProgress(progress, `Cargando idiomas... ${Math.min(i + batchSize, langEntries.length)}/${totalLangs}`);
+                }
+
+                // Filter out failed requests
+                allLanguagesData = allResults.filter(r => r && r.summary);
+
+                updateProgress(95, 'Procesando resultados...');
+
+                // Step 5: Display results
+                if (allLanguagesData.length === 0) {
+                    showNoResults();
+                    return;
+                }
+
+                currentData = {
+                    term: term,
+                    wikidata: wikidataEntity,
+                    languages: allLanguagesData
+                };
+
+                displayWikidata(wikidataEntity);
+                displayLanguages(allLanguagesData);
+
+                updateProgress(100, '¡Completado!');
+
+                setTimeout(() => {
+                    hideProgress();
+                }, 500);
+
+            } catch (error) {
+                console.error('Search error:', error);
+                showNoResults();
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ============ WIKIPEDIA API ============
+        async function searchWikipedia(term) {
+            // Try multiple languages to find the article
+            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'];
             const variations = [term, term.toLowerCase(), titleCase(term)];
-            let bestResult = null;
 
             for (const variant of variations) {
-                try {
-                    const results = await fetchAllLanguages(variant);
-                    const validResults = Object.entries(results).filter(([_, data]) => data.summary);
+                for (const lang of tryLanguages) {
+                    try {
+                        const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(variant)}`;
+                        const response = await fetch(url);
 
-                    if (validResults.length > 0) {
-                        // Find the one with the longest summary
-                        const [bestLang, bestData] = validResults.reduce((a, b) =>
-                            a[1].summary.length > b[1].summary.length ? a : b
-                        );
-
-                        bestResult = {
-                            term: variant,
-                            lang: bestLang,
-                            data: bestData,
-                            allResults: results
-                        };
-                        break;
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.extract) {
+                                return { lang, title: data.title };
+                            }
+                        }
+                    } catch (e) {
+                        continue;
                     }
-                } catch (error) {
-                    console.error('Search error:', error);
                 }
             }
-
-            setLoading(false);
-
-            if (bestResult) {
-                displayResults(bestResult);
-            } else {
-                noResults.classList.remove('hidden');
-            }
+            return null;
         }
 
-        // Fetch from all selected languages in parallel
-        async function fetchAllLanguages(term) {
-            const requests = selectedLanguages.map(lang =>
-                fetchWikipedia(lang, term).then(data => [lang, data])
-            );
-
-            const results = await Promise.allSettled(requests);
-            const output = {};
-
-            results.forEach(result => {
-                if (result.status === 'fulfilled') {
-                    const [lang, data] = result.value;
-                    output[lang] = data;
-                }
+        async function getLanguageLinks(lang, title) {
+            const url = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
+                action: 'query',
+                titles: title,
+                prop: 'langlinks',
+                lllimit: '500',
+                format: 'json',
+                origin: '*'
             });
-
-            return output;
-        }
-
-        // Fetch from Wikipedia API
-        async function fetchWikipedia(lang, term) {
-            const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(term)}`;
 
             try {
                 const response = await fetch(url);
+                const data = await response.json();
+                const pages = data.query.pages;
+                const pageId = Object.keys(pages)[0];
+                const langlinks = pages[pageId]?.langlinks || [];
 
-                if (!response.ok) {
-                    return { summary: '', title: '', url: '' };
-                }
+                const result = {};
+                langlinks.forEach(ll => {
+                    result[ll.lang] = ll['*'];
+                });
+                return result;
+            } catch (error) {
+                return {};
+            }
+        }
+
+        async function fetchSummary(lang, title) {
+            try {
+                const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+                const response = await fetch(url);
+
+                if (!response.ok) return null;
 
                 const data = await response.json();
 
                 return {
+                    lang: lang,
+                    langName: getLanguageName(lang),
+                    title: data.title,
                     summary: data.extract || '',
-                    title: data.title || term,
-                    url: data.content_urls?.desktop?.page || `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(term)}`
+                    url: data.content_urls?.desktop?.page || `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`,
+                    charCount: (data.extract || '').length
                 };
             } catch (error) {
-                return { summary: '', title: '', url: '' };
+                return null;
             }
         }
 
-        // Display results
-        function displayResults(result) {
-            currentResults = result;
-
-            // Main result
-            detectedLang.textContent = ALL_LANGUAGES[result.lang];
-            summary.textContent = result.data.summary;
-
-            // Count available translations
-            const translations = Object.entries(result.allResults)
-                .filter(([lang, data]) => data.summary && lang !== result.lang);
-
-            langCount.textContent = `${translations.length + 1} idiomas encontrados`;
-
-            resultCard.classList.remove('hidden');
-
-            // Translations grid
-            if (translations.length > 0) {
-                translationsGrid.innerHTML = translations.map(([lang, data]) => `
-                    <a href="${data.url}" target="_blank" class="translation-card">
-                        <div class="translation-lang">${ALL_LANGUAGES[lang]}</div>
-                        <div class="translation-title">${data.title}</div>
-                    </a>
-                `).join('');
-
-                translationsCard.classList.remove('hidden');
-            }
-
-            // Reset copy button
-            copyBtn.textContent = 'Copiar titulo';
-            copyBtn.classList.remove('copied');
-        }
-
-        // Copy title to clipboard
-        copyBtn.addEventListener('click', async () => {
-            if (!currentResults) return;
+        // ============ WIKIDATA API ============
+        async function getWikidataId(lang, title) {
+            const url = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
+                action: 'query',
+                titles: title,
+                prop: 'pageprops',
+                format: 'json',
+                origin: '*'
+            });
 
             try {
-                await navigator.clipboard.writeText(currentResults.data.title);
-                copyBtn.textContent = 'Copiado!';
-                copyBtn.classList.add('copied');
-
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copiar titulo';
-                    copyBtn.classList.remove('copied');
-                }, 2000);
+                const response = await fetch(url);
+                const data = await response.json();
+                const pages = data.query.pages;
+                const pageId = Object.keys(pages)[0];
+                return pages[pageId]?.pageprops?.wikibase_item || null;
             } catch (error) {
-                showError('No se pudo copiar al portapapeles.');
+                return null;
             }
-        });
+        }
 
-        // Utility functions
+        async function getWikidataEntity(qid) {
+            const url = `https://www.wikidata.org/w/api.php?` + new URLSearchParams({
+                action: 'wbgetentities',
+                ids: qid,
+                props: 'labels|descriptions|claims',
+                languages: 'es|en',
+                format: 'json',
+                origin: '*'
+            });
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.entities?.[qid] || null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function extractWikidataValue(claim) {
+            if (!claim || !claim[0]) return null;
+
+            const mainsnak = claim[0].mainsnak;
+            if (!mainsnak.datavalue) return null;
+
+            const value = mainsnak.datavalue.value;
+            const type = mainsnak.datavalue.type;
+
+            switch (type) {
+                case 'string':
+                    return value;
+                case 'time':
+                    return formatWikidataDate(value.time);
+                case 'wikibase-entityid':
+                    return { id: value.id, needsLabel: true };
+                case 'quantity':
+                    return value.amount;
+                case 'globecoordinate':
+                    return `${value.latitude.toFixed(4)}, ${value.longitude.toFixed(4)}`;
+                case 'monolingualtext':
+                    return value.text;
+                default:
+                    return null;
+            }
+        }
+
+        function formatWikidataDate(timeStr) {
+            // Format: +1452-04-15T00:00:00Z
+            const match = timeStr.match(/([+-]?\d+)-(\d{2})-(\d{2})/);
+            if (match) {
+                const year = parseInt(match[1]);
+                const month = parseInt(match[2]);
+                const day = parseInt(match[3]);
+
+                if (month === 0 && day === 0) return `${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
+                if (day === 0) return `${getMonthName(month)} ${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
+                return `${day} ${getMonthName(month)} ${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
+            }
+            return timeStr;
+        }
+
+        function getMonthName(month) {
+            const months = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                           'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            return months[month] || '';
+        }
+
+        async function resolveWikidataLabels(ids) {
+            if (ids.length === 0) return {};
+
+            const url = `https://www.wikidata.org/w/api.php?` + new URLSearchParams({
+                action: 'wbgetentities',
+                ids: ids.join('|'),
+                props: 'labels',
+                languages: 'es|en',
+                format: 'json',
+                origin: '*'
+            });
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const labels = {};
+
+                for (const [id, entity] of Object.entries(data.entities || {})) {
+                    labels[id] = entity.labels?.es?.value || entity.labels?.en?.value || id;
+                }
+
+                return labels;
+            } catch (error) {
+                return {};
+            }
+        }
+
+        // ============ DISPLAY FUNCTIONS ============
+        async function displayWikidata(entity) {
+            if (!entity) {
+                wikidataCard.classList.add('hidden');
+                return;
+            }
+
+            const claims = entity.claims || {};
+            const items = [];
+            const idsToResolve = [];
+
+            // Extract values and collect IDs that need label resolution
+            for (const [prop, config] of Object.entries(WIKIDATA_PROPS)) {
+                if (claims[prop]) {
+                    const value = extractWikidataValue(claims[prop]);
+                    if (value) {
+                        if (value.needsLabel) {
+                            idsToResolve.push(value.id);
+                            items.push({ prop, config, value: value.id, needsLabel: true });
+                        } else {
+                            items.push({ prop, config, value, needsLabel: false });
+                        }
+                    }
+                }
+            }
+
+            // Resolve entity labels
+            const labels = await resolveWikidataLabels(idsToResolve);
+
+            // Check for image
+            if (claims['P18']) {
+                const imageName = extractWikidataValue(claims['P18']);
+                if (imageName) {
+                    const imageUrl = getCommonsImageUrl(imageName);
+                    entityImage.src = imageUrl;
+                    entityImage.classList.remove('hidden');
+                }
+            } else {
+                entityImage.classList.add('hidden');
+            }
+
+            // Build grid
+            wikidataGrid.innerHTML = items
+                .filter(item => item.prop !== 'P18') // Exclude image from grid
+                .map(item => {
+                    const displayValue = item.needsLabel ? (labels[item.value] || item.value) : item.value;
+                    const isUrl = typeof displayValue === 'string' && displayValue.startsWith('http');
+
+                    return `
+                        <div class="wikidata-item">
+                            <div class="wikidata-icon">${item.config.icon}</div>
+                            <div class="wikidata-content">
+                                <div class="wikidata-label">${item.config.label}</div>
+                                <div class="wikidata-value">
+                                    ${isUrl ? `<a href="${displayValue}" target="_blank">${displayValue}</a>` : displayValue}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            wikidataCard.classList.remove('hidden');
+        }
+
+        function getCommonsImageUrl(filename) {
+            // Generate Wikimedia Commons thumbnail URL
+            const encoded = encodeURIComponent(filename.replace(/ /g, '_'));
+            return `https://commons.wikimedia.org/wiki/Special:FilePath/${encoded}?width=300`;
+        }
+
+        function displayLanguages(languages) {
+            langCountBadge.textContent = languages.length;
+            renderLanguageList(languages);
+            languagesCard.classList.remove('hidden');
+        }
+
+        function renderLanguageList(languages) {
+            languagesList.innerHTML = languages.map((lang, index) => `
+                <div class="language-item" data-index="${index}">
+                    <div class="language-header" onclick="toggleLanguage(${index})">
+                        <div class="expand-icon">▼</div>
+                        <span class="lang-code">${lang.lang}</span>
+                        <div class="lang-info">
+                            <div class="lang-name">${lang.langName}</div>
+                            <div class="lang-title">${lang.title}</div>
+                        </div>
+                        <span class="char-count">${formatNumber(lang.charCount)} caracteres</span>
+                    </div>
+                    <div class="language-content">
+                        <p class="language-summary">${lang.summary}</p>
+                        <div class="language-actions">
+                            <a href="${lang.url}" target="_blank" class="small-btn">🔗 Ver en Wikipedia</a>
+                            <button class="small-btn" onclick="copyText('${escapeForJs(lang.summary)}', event)">📋 Copiar texto</button>
+                            <button class="small-btn" onclick="copyText('${escapeForJs(lang.title)}', event)">📋 Copiar título</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleLanguage(index) {
+            const item = document.querySelector(`.language-item[data-index="${index}"]`);
+            item.classList.toggle('expanded');
+        }
+
+        // ============ UTILITY FUNCTIONS ============
+        function getLanguageName(code) {
+            const names = {
+                'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch',
+                'it': 'Italiano', 'pt': 'Português', 'ru': 'Русский', 'ja': '日本語',
+                'zh': '中文', 'ar': 'العربية', 'ko': '한국어', 'nl': 'Nederlands',
+                'pl': 'Polski', 'sv': 'Svenska', 'uk': 'Українська', 'vi': 'Tiếng Việt',
+                'ca': 'Català', 'fi': 'Suomi', 'cs': 'Čeština', 'ro': 'Română',
+                'hu': 'Magyar', 'el': 'Ελληνικά', 'da': 'Dansk', 'he': 'עברית',
+                'no': 'Norsk', 'id': 'Bahasa Indonesia', 'th': 'ไทย', 'tr': 'Türkçe',
+                'fa': 'فارسی', 'hi': 'हिन्दी', 'bn': 'বাংলা', 'la': 'Latina',
+                'eu': 'Euskara', 'gl': 'Galego', 'hr': 'Hrvatski', 'sk': 'Slovenčina',
+                'sr': 'Српски', 'bg': 'Български', 'lt': 'Lietuvių', 'sl': 'Slovenščina',
+                'et': 'Eesti', 'lv': 'Latviešu', 'ms': 'Bahasa Melayu', 'ta': 'தமிழ்',
+                'te': 'తెలుగు', 'ml': 'മലയാളം', 'mr': 'मराठी', 'kn': 'ಕನ್ನಡ',
+                'gu': 'ગુજરાતી', 'pa': 'ਪੰਜਾਬੀ', 'or': 'ଓଡ଼ିଆ', 'as': 'অসমীয়া',
+                'ne': 'नेपाली', 'si': 'සිංහල', 'my': 'မြန်မာ', 'km': 'ភាសាខ្មែរ',
+                'ka': 'ქართული', 'hy': 'Հայերdelays', 'az': 'Azərbaycan', 'uz': 'Oʻzbek',
+                'kk': 'Қазақ', 'ky': 'Кыргыз', 'tg': 'Тоҷикӣ', 'mn': 'Монгол',
+                'af': 'Afrikaans', 'sw': 'Kiswahili', 'yo': 'Yorùbá', 'zu': 'Zulu',
+                'simple': 'Simple English', 'war': 'Winaray', 'ceb': 'Cebuano',
+                'min': 'Minangkabau', 'jv': 'Basa Jawa', 'su': 'Basa Sunda',
+                'eo': 'Esperanto', 'cy': 'Cymraeg', 'ga': 'Gaeilge', 'gd': 'Gàidhlig',
+                'br': 'Brezhoneg', 'oc': 'Occitan', 'an': 'Aragonés', 'ast': 'Asturianu',
+                'nds': 'Plattdüütsch', 'lb': 'Lëtzebuergesch', 'fy': 'Frysk',
+                'is': 'Íslenska', 'fo': 'Føroyskt', 'nn': 'Nynorsk', 'nb': 'Bokmål',
+                'sh': 'Srpskohrvatski', 'bs': 'Bosanski', 'mk': 'Македонски',
+                'sq': 'Shqip', 'be': 'Беларуская', 'tt': 'Татар', 'ba': 'Башҡорт',
+                'cv': 'Чӑваш', 'ce': 'Нохчийн', 'sco': 'Scots', 'nap': 'Napulitano',
+                'vec': 'Vèneto', 'lmo': 'Lombard', 'pms': 'Piemontèis', 'scn': 'Sicilianu',
+                'wa': 'Walon', 'als': 'Alemannisch', 'bar': 'Boarisch', 'frr': 'Nordfriisk',
+                'li': 'Limburgs', 'vls': 'West-Vlams', 'zea': 'Zeêuws'
+            };
+            return names[code] || code.toUpperCase();
+        }
+
         function titleCase(str) {
             return str.replace(/\w\S*/g, txt =>
                 txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
             );
         }
 
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+
+        function escapeForJs(str) {
+            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+        }
+
         function setLoading(loading) {
             searchBtn.disabled = loading;
-            status.classList.toggle('loading', loading);
+            searchBtn.classList.toggle('loading', loading);
         }
 
-        function hideAll() {
-            resultCard.classList.add('hidden');
-            translationsCard.classList.add('hidden');
-            noResults.classList.add('hidden');
+        function showProgress() {
+            progressSection.classList.add('visible');
         }
 
-        function showError(message) {
-            errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+        function hideProgress() {
+            progressSection.classList.remove('visible');
         }
 
-        function clearError() {
-            errorContainer.innerHTML = '';
+        function updateProgress(percent, text) {
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = text;
         }
 
-        // Event listeners
+        function hideAllCards() {
+            wikidataCard.classList.add('hidden');
+            languagesCard.classList.add('hidden');
+            noResultsCard.classList.add('hidden');
+        }
+
+        function showNoResults() {
+            noResultsCard.classList.remove('hidden');
+            hideProgress();
+            setLoading(false);
+        }
+
+        function showCopyNotification(text = '✓ Copiado al portapapeles') {
+            copyNotification.textContent = text;
+            copyNotification.classList.add('visible');
+            setTimeout(() => {
+                copyNotification.classList.remove('visible');
+            }, 2000);
+        }
+
+        // ============ ACTIONS ============
+        function copyText(text, event) {
+            if (event) event.stopPropagation();
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyNotification();
+            });
+        }
+
+        function copyAllContent() {
+            if (!currentData) return;
+
+            let content = `# ${currentData.term}\n\n`;
+
+            // Add Wikidata info
+            if (currentData.wikidata) {
+                content += `## Datos Unificados (Wikidata)\n\n`;
+                const description = currentData.wikidata.descriptions?.es?.value ||
+                                   currentData.wikidata.descriptions?.en?.value || '';
+                if (description) content += `${description}\n\n`;
+            }
+
+            // Add all language summaries
+            content += `## Información por Idioma (${currentData.languages.length} idiomas)\n\n`;
+
+            currentData.languages.forEach(lang => {
+                content += `### ${lang.langName} (${lang.lang})\n`;
+                content += `**Título:** ${lang.title}\n\n`;
+                content += `${lang.summary}\n\n`;
+                content += `---\n\n`;
+            });
+
+            navigator.clipboard.writeText(content).then(() => {
+                showCopyNotification(`✓ Copiado: ${currentData.languages.length} idiomas`);
+            });
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.language-item').forEach(item => {
+                item.classList.add('expanded');
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.language-item').forEach(item => {
+                item.classList.remove('expanded');
+            });
+        }
+
+        function sortLanguages() {
+            const sortBy = sortSelect.value;
+            let sorted = [...allLanguagesData];
+
+            switch (sortBy) {
+                case 'length-desc':
+                    sorted.sort((a, b) => b.charCount - a.charCount);
+                    break;
+                case 'length-asc':
+                    sorted.sort((a, b) => a.charCount - b.charCount);
+                    break;
+                case 'alpha':
+                    sorted.sort((a, b) => a.langName.localeCompare(b.langName));
+                    break;
+            }
+
+            renderLanguageList(sorted);
+        }
+
+        function filterLanguages() {
+            const filter = filterInput.value.toLowerCase();
+            document.querySelectorAll('.language-item').forEach(item => {
+                const langName = item.querySelector('.lang-name').textContent.toLowerCase();
+                const langCode = item.querySelector('.lang-code').textContent.toLowerCase();
+                const title = item.querySelector('.lang-title').textContent.toLowerCase();
+
+                const matches = langName.includes(filter) ||
+                               langCode.includes(filter) ||
+                               title.includes(filter);
+
+                item.style.display = matches ? '' : 'none';
+            });
+        }
+
+        // ============ EVENT LISTENERS ============
         searchBtn.addEventListener('click', search);
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') search();
         });
+        sortSelect.addEventListener('change', sortLanguages);
+        filterInput.addEventListener('input', filterLanguages);
+        expandAllBtn.addEventListener('click', expandAll);
+        collapseAllBtn.addEventListener('click', collapseAll);
+        copyAllBtn.addEventListener('click', copyAllContent);
 
-        // Initialize
-        initLanguageCheckboxes();
+        // Focus search on load
         searchInput.focus();
     </script>
 </body>
