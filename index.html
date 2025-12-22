@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia Multilingue</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --success: #34a853;
+            --error: #ea4335;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --border: #dadce0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-btn {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .search-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .status.loading {
+            background: var(--error);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .language-badge {
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .lang-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .summary {
+            line-height: 1.7;
+            color: var(--text);
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .summary::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .summary::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .translations-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .translations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .translation-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .translation-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .translation-lang {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .translation-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            word-break: break-word;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .no-results h3 {
+            margin-bottom: 10px;
+            color: var(--error);
+        }
+
+        .error-message {
+            background: #fce8e6;
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .settings-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .settings-toggle:hover {
+            background: var(--bg);
+        }
+
+        .settings-panel {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .settings-panel.open {
+            display: block;
+        }
+
+        .language-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .language-checkboxes label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .language-checkboxes input:checked + span {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                justify-content: center;
+            }
+
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .translations-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wikipedia Multilingue</h1>
+            <p>Busca articulos en 9 idiomas y encuentra traducciones</p>
+        </header>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="Escribe un termino de busqueda..."
+                autocomplete="off"
+            >
+            <button id="searchBtn" class="search-btn">
+                <span class="status" id="status"></span>
+                Buscar
+            </button>
+        </div>
+
+        <button class="settings-toggle" id="settingsToggle">Configurar idiomas</button>
+
+        <div class="settings-panel card" id="settingsPanel">
+            <div class="language-checkboxes" id="languageCheckboxes"></div>
+        </div>
+
+        <div id="errorContainer"></div>
+
+        <div id="resultCard" class="card hidden">
+            <div class="result-header">
+                <div>
+                    <span class="language-badge" id="detectedLang"></span>
+                    <button class="copy-btn" id="copyBtn">Copiar titulo</button>
+                </div>
+                <span class="lang-count" id="langCount"></span>
+            </div>
+            <div class="summary" id="summary"></div>
+        </div>
+
+        <div id="translationsCard" class="card hidden">
+            <h3 class="translations-title">Traducciones disponibles</h3>
+            <div class="translations-grid" id="translationsGrid"></div>
+        </div>
+
+        <div id="noResults" class="card no-results hidden">
+            <h3>Sin resultados</h3>
+            <p>No se encontraron articulos para este termino. Intenta con otra busqueda.</p>
+        </div>
+
+        <footer>
+            <p>Datos de <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration
+        const ALL_LANGUAGES = {
+            'en': 'English',
+            'es': 'Espanol',
+            'fr': 'Francais',
+            'de': 'Deutsch',
+            'it': 'Italiano',
+            'pt': 'Portugues',
+            'el': 'Ellinika',
+            'la': 'Latina',
+            'ca': 'Catala'
+        };
+
+        // State
+        let selectedLanguages = Object.keys(ALL_LANGUAGES);
+        let currentResults = null;
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const status = document.getElementById('status');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const languageCheckboxes = document.getElementById('languageCheckboxes');
+        const errorContainer = document.getElementById('errorContainer');
+        const resultCard = document.getElementById('resultCard');
+        const detectedLang = document.getElementById('detectedLang');
+        const copyBtn = document.getElementById('copyBtn');
+        const langCount = document.getElementById('langCount');
+        const summary = document.getElementById('summary');
+        const translationsCard = document.getElementById('translationsCard');
+        const translationsGrid = document.getElementById('translationsGrid');
+        const noResults = document.getElementById('noResults');
+
+        // Initialize language checkboxes
+        function initLanguageCheckboxes() {
+            languageCheckboxes.innerHTML = Object.entries(ALL_LANGUAGES).map(([code, name]) => `
+                <label>
+                    <input type="checkbox" value="${code}" checked>
+                    <span>${name}</span>
+                </label>
+            `).join('');
+
+            languageCheckboxes.querySelectorAll('input').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    selectedLanguages = Array.from(languageCheckboxes.querySelectorAll('input:checked'))
+                        .map(cb => cb.value);
+                });
+            });
+        }
+
+        // Toggle settings panel
+        settingsToggle.addEventListener('click', () => {
+            settingsPanel.classList.toggle('open');
+        });
+
+        // Search function
+        async function search() {
+            const term = searchInput.value.trim();
+            if (!term) {
+                showError('Por favor, escribe un termino de busqueda.');
+                return;
+            }
+
+            if (selectedLanguages.length === 0) {
+                showError('Selecciona al menos un idioma.');
+                return;
+            }
+
+            setLoading(true);
+            hideAll();
+            clearError();
+
+            const variations = [term, term.toLowerCase(), titleCase(term)];
+            let bestResult = null;
+
+            for (const variant of variations) {
+                try {
+                    const results = await fetchAllLanguages(variant);
+                    const validResults = Object.entries(results).filter(([_, data]) => data.summary);
+
+                    if (validResults.length > 0) {
+                        // Find the one with the longest summary
+                        const [bestLang, bestData] = validResults.reduce((a, b) =>
+                            a[1].summary.length > b[1].summary.length ? a : b
+                        );
+
+                        bestResult = {
+                            term: variant,
+                            lang: bestLang,
+                            data: bestData,
+                            allResults: results
+                        };
+                        break;
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                }
+            }
+
+            setLoading(false);
+
+            if (bestResult) {
+                displayResults(bestResult);
+            } else {
+                noResults.classList.remove('hidden');
+            }
+        }
+
+        // Fetch from all selected languages in parallel
+        async function fetchAllLanguages(term) {
+            const requests = selectedLanguages.map(lang =>
+                fetchWikipedia(lang, term).then(data => [lang, data])
+            );
+
+            const results = await Promise.allSettled(requests);
+            const output = {};
+
+            results.forEach(result => {
+                if (result.status === 'fulfilled') {
+                    const [lang, data] = result.value;
+                    output[lang] = data;
+                }
+            });
+
+            return output;
+        }
+
+        // Fetch from Wikipedia API
+        async function fetchWikipedia(lang, term) {
+            const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(term)}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    return { summary: '', title: '', url: '' };
+                }
+
+                const data = await response.json();
+
+                return {
+                    summary: data.extract || '',
+                    title: data.title || term,
+                    url: data.content_urls?.desktop?.page || `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(term)}`
+                };
+            } catch (error) {
+                return { summary: '', title: '', url: '' };
+            }
+        }
+
+        // Display results
+        function displayResults(result) {
+            currentResults = result;
+
+            // Main result
+            detectedLang.textContent = ALL_LANGUAGES[result.lang];
+            summary.textContent = result.data.summary;
+
+            // Count available translations
+            const translations = Object.entries(result.allResults)
+                .filter(([lang, data]) => data.summary && lang !== result.lang);
+
+            langCount.textContent = `${translations.length + 1} idiomas encontrados`;
+
+            resultCard.classList.remove('hidden');
+
+            // Translations grid
+            if (translations.length > 0) {
+                translationsGrid.innerHTML = translations.map(([lang, data]) => `
+                    <a href="${data.url}" target="_blank" class="translation-card">
+                        <div class="translation-lang">${ALL_LANGUAGES[lang]}</div>
+                        <div class="translation-title">${data.title}</div>
+                    </a>
+                `).join('');
+
+                translationsCard.classList.remove('hidden');
+            }
+
+            // Reset copy button
+            copyBtn.textContent = 'Copiar titulo';
+            copyBtn.classList.remove('copied');
+        }
+
+        // Copy title to clipboard
+        copyBtn.addEventListener('click', async () => {
+            if (!currentResults) return;
+
+            try {
+                await navigator.clipboard.writeText(currentResults.data.title);
+                copyBtn.textContent = 'Copiado!';
+                copyBtn.classList.add('copied');
+
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copiar titulo';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } catch (error) {
+                showError('No se pudo copiar al portapapeles.');
+            }
+        });
+
+        // Utility functions
+        function titleCase(str) {
+            return str.replace(/\w\S*/g, txt =>
+                txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+            );
+        }
+
+        function setLoading(loading) {
+            searchBtn.disabled = loading;
+            status.classList.toggle('loading', loading);
+        }
+
+        function hideAll() {
+            resultCard.classList.add('hidden');
+            translationsCard.classList.add('hidden');
+            noResults.classList.add('hidden');
+        }
+
+        function showError(message) {
+            errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+
+        function clearError() {
+            errorContainer.innerHTML = '';
+        }
+
+        // Event listeners
+        searchBtn.addEventListener('click', search);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') search();
+        });
+
+        // Initialize
+        initLanguageCheckboxes();
+        searchInput.focus();
+    </script>
+</body>
+</html>
