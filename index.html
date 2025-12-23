@@ -1003,29 +1003,39 @@
 
         // ============ FETCH FUNCTIONS ============
         async function searchWikipedia(term) {
-            // Only search in allowed Western languages
-            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'la', 'ca', 'nl', 'pl', 'el'];
-            // Try multiple variations including common name patterns
-            const variations = [
-                term,
-                term.toLowerCase(),
-                titleCase(term),
-                term.replace(/\s+/g, '_'),
-                // Handle names like "tomas aquinas" -> "Thomas Aquinas"
-                term.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
-            ];
+            // Try search API in main languages (more flexible than direct URL)
+            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ca', 'nl', 'pl', 'el'];
 
-            for (const variant of variations) {
-                for (const lang of tryLanguages) {
-                    try {
-                        const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(variant)}`;
-                        const response = await fetch(url);
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.extract) return { lang, title: data.title };
+            for (const lang of tryLanguages) {
+                try {
+                    // Use Wikipedia's search API
+                    const searchUrl = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
+                        action: 'query',
+                        list: 'search',
+                        srsearch: term,
+                        srlimit: '1',
+                        format: 'json',
+                        origin: '*'
+                    });
+
+                    const searchResp = await fetch(searchUrl);
+                    const searchData = await searchResp.json();
+                    const results = searchData.query?.search || [];
+
+                    if (results.length > 0) {
+                        const title = results[0].title;
+                        // Verify the page exists and get summary
+                        const summaryUrl = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+                        const summaryResp = await fetch(summaryUrl);
+
+                        if (summaryResp.ok) {
+                            const summaryData = await summaryResp.json();
+                            if (summaryData.extract) {
+                                return { lang, title: summaryData.title };
+                            }
                         }
-                    } catch (e) { continue; }
-                }
+                    }
+                } catch (e) { continue; }
             }
             return null;
         }
