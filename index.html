@@ -769,25 +769,21 @@
     </footer>
 
     <script>
-        // ============ ALLOWED LANGUAGES (Main Western languages + Greek) ============
+        // ============ ALLOWED LANGUAGES (Main European languages + Greek) ============
         const ALLOWED_LANGUAGES = new Set([
-            // Major Western languages
-            'en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'pl', 'sv', 'da', 'no', 'fi',
-            // Other official Romance languages
+            // Major Western European
+            'en', 'es', 'fr', 'de', 'it', 'pt', 'nl',
+            // Scandinavian
+            'sv', 'da', 'no', 'fi', 'is',
+            // Romance (official)
             'ca', 'gl', 'ro',
-            // Celtic languages (official)
-            'cy', 'ga', 'gd', 'br',
-            // Baltic languages
+            // Slavic (Latin script)
+            'pl', 'cs', 'sk', 'sl', 'hr', 'bs',
+            // Baltic
             'lt', 'lv',
-            // Slavic with Latin script
-            'cs', 'sk', 'sl', 'hr', 'bs',
             // Finno-Ugric
             'et', 'hu',
-            // Other main languages
-            'eu', 'sq', 'tr', 'is', 'mt', 'lb',
-            // Auxiliary/Classical
-            'eo', 'la',
-            // Greek (exception requested by user)
+            // Greek
             'el'
         ]);
 
@@ -1505,26 +1501,20 @@
         // ============ UTILITIES ============
         function getLanguageName(code) {
             const names = {
-                // Major Western
+                // Major Western European
                 'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch',
                 'it': 'Italiano', 'pt': 'Português', 'nl': 'Nederlands',
-                'pl': 'Polski', 'sv': 'Svenska', 'da': 'Dansk', 'no': 'Norsk', 'fi': 'Suomi',
+                // Scandinavian
+                'sv': 'Svenska', 'da': 'Dansk', 'no': 'Norsk', 'fi': 'Suomi', 'is': 'Íslenska',
                 // Romance
                 'ca': 'Català', 'gl': 'Galego', 'ro': 'Română',
-                // Celtic
-                'cy': 'Cymraeg', 'ga': 'Gaeilge', 'gd': 'Gàidhlig', 'br': 'Brezhoneg',
+                // Slavic
+                'pl': 'Polski', 'cs': 'Čeština', 'sk': 'Slovenčina',
+                'sl': 'Slovenščina', 'hr': 'Hrvatski', 'bs': 'Bosanski',
                 // Baltic
                 'lt': 'Lietuvių', 'lv': 'Latviešu',
-                // Slavic
-                'cs': 'Čeština', 'sk': 'Slovenčina', 'sl': 'Slovenščina',
-                'hr': 'Hrvatski', 'bs': 'Bosanski',
                 // Finno-Ugric
                 'et': 'Eesti', 'hu': 'Magyar',
-                // Other
-                'eu': 'Euskara', 'sq': 'Shqip', 'tr': 'Türkçe',
-                'is': 'Íslenska', 'mt': 'Malti', 'lb': 'Lëtzebuergesch',
-                // Auxiliary/Classical
-                'eo': 'Esperanto', 'la': 'Latina',
                 // Greek
                 'el': 'Ελληνικά'
             };
