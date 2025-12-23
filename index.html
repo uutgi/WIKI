@@ -769,28 +769,24 @@
     </footer>
 
     <script>
-        // ============ ALLOWED LANGUAGES (Latin alphabet + Greek) ============
+        // ============ ALLOWED LANGUAGES (Main Western languages + Greek) ============
         const ALLOWED_LANGUAGES = new Set([
             // Major Western languages
             'en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'pl', 'sv', 'da', 'no', 'fi',
-            // Romance languages
-            'ca', 'gl', 'ro', 'oc', 'an', 'ast', 'ext', 'fur', 'lad', 'lij', 'lmo',
-            'nap', 'pms', 'rm', 'sc', 'scn', 'vec', 'wa',
-            // Germanic languages
-            'af', 'als', 'bar', 'cy', 'fy', 'gd', 'is', 'lb', 'li', 'nds', 'nn', 'sco', 'vls',
-            // Celtic languages
-            'br', 'ga', 'gv', 'kw',
+            // Other official Romance languages
+            'ca', 'gl', 'ro',
+            // Celtic languages (official)
+            'cy', 'ga', 'gd', 'br',
             // Baltic languages
             'lt', 'lv',
             // Slavic with Latin script
-            'cs', 'sk', 'sl', 'hr', 'bs', 'pl',
-            // Finno-Ugric with Latin script
+            'cs', 'sk', 'sl', 'hr', 'bs',
+            // Finno-Ugric
             'et', 'hu',
-            // Other Latin-script languages
-            'eu', 'mt', 'sq', 'tr', 'az', 'uz', 'tk', 'sw', 'id', 'ms', 'tl', 'ceb', 'vi',
-            'eo', 'io', 'ia', 'ie', 'vo', 'la',
-            // Simple English
-            'simple',
+            // Other main languages
+            'eu', 'sq', 'tr', 'is', 'mt', 'lb',
+            // Auxiliary/Classical
+            'eo', 'la',
             // Greek (exception requested by user)
             'el'
         ]);
@@ -1011,8 +1007,17 @@
 
         // ============ FETCH FUNCTIONS ============
         async function searchWikipedia(term) {
-            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'];
-            const variations = [term, term.toLowerCase(), titleCase(term)];
+            // Only search in allowed Western languages
+            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'la', 'ca', 'nl', 'pl', 'el'];
+            // Try multiple variations including common name patterns
+            const variations = [
+                term,
+                term.toLowerCase(),
+                titleCase(term),
+                term.replace(/\s+/g, '_'),
+                // Handle names like "tomas aquinas" -> "Thomas Aquinas"
+                term.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+            ];
 
             for (const variant of variations) {
                 for (const lang of tryLanguages) {
@@ -1500,27 +1505,28 @@
         // ============ UTILITIES ============
         function getLanguageName(code) {
             const names = {
+                // Major Western
                 'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch',
                 'it': 'Italiano', 'pt': 'Português', 'nl': 'Nederlands',
                 'pl': 'Polski', 'sv': 'Svenska', 'da': 'Dansk', 'no': 'Norsk', 'fi': 'Suomi',
-                'ca': 'Català', 'gl': 'Galego', 'ro': 'Română', 'oc': 'Occitan',
-                'eu': 'Euskara', 'la': 'Latina', 'el': 'Ελληνικά',
+                // Romance
+                'ca': 'Català', 'gl': 'Galego', 'ro': 'Română',
+                // Celtic
+                'cy': 'Cymraeg', 'ga': 'Gaeilge', 'gd': 'Gàidhlig', 'br': 'Brezhoneg',
+                // Baltic
+                'lt': 'Lietuvių', 'lv': 'Latviešu',
+                // Slavic
                 'cs': 'Čeština', 'sk': 'Slovenčina', 'sl': 'Slovenščina',
-                'hr': 'Hrvatski', 'bs': 'Bosanski', 'sq': 'Shqip',
-                'hu': 'Magyar', 'et': 'Eesti', 'lt': 'Lietuvių', 'lv': 'Latviešu',
-                'is': 'Íslenska', 'ga': 'Gaeilge', 'cy': 'Cymraeg', 'gd': 'Gàidhlig',
-                'br': 'Brezhoneg', 'af': 'Afrikaans', 'mt': 'Malti',
-                'tr': 'Türkçe', 'az': 'Azərbaycan', 'id': 'Bahasa Indonesia',
-                'ms': 'Bahasa Melayu', 'sw': 'Kiswahili', 'tl': 'Tagalog',
-                'vi': 'Tiếng Việt', 'eo': 'Esperanto', 'simple': 'Simple English',
-                'lb': 'Lëtzebuergesch', 'fy': 'Frysk', 'nn': 'Nynorsk',
-                'nds': 'Plattdüütsch', 'als': 'Alemannisch', 'bar': 'Boarisch',
-                'an': 'Aragonés', 'ast': 'Asturianu', 'ext': 'Extremeñu',
-                'nap': 'Napulitano', 'scn': 'Sicilianu', 'vec': 'Vèneto',
-                'lmo': 'Lombard', 'pms': 'Piemontèis', 'fur': 'Furlan',
-                'lij': 'Ligure', 'sc': 'Sardu', 'wa': 'Walon', 'rm': 'Rumantsch',
-                'sco': 'Scots', 'gv': 'Gaelg', 'kw': 'Kernowek',
-                'ceb': 'Cebuano', 'io': 'Ido', 'ia': 'Interlingua', 'vo': 'Volapük'
+                'hr': 'Hrvatski', 'bs': 'Bosanski',
+                // Finno-Ugric
+                'et': 'Eesti', 'hu': 'Magyar',
+                // Other
+                'eu': 'Euskara', 'sq': 'Shqip', 'tr': 'Türkçe',
+                'is': 'Íslenska', 'mt': 'Malti', 'lb': 'Lëtzebuergesch',
+                // Auxiliary/Classical
+                'eo': 'Esperanto', 'la': 'Latina',
+                // Greek
+                'el': 'Ελληνικά'
             };
             return names[code] || code.toUpperCase();
         }
