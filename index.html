@@ -1011,8 +1011,17 @@
 
         // ============ FETCH FUNCTIONS ============
         async function searchWikipedia(term) {
-            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'];
-            const variations = [term, term.toLowerCase(), titleCase(term)];
+            // Only search in allowed Western languages
+            const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'la', 'ca', 'nl', 'pl', 'el'];
+            // Try multiple variations including common name patterns
+            const variations = [
+                term,
+                term.toLowerCase(),
+                titleCase(term),
+                term.replace(/\s+/g, '_'),
+                // Handle names like "tomas aquinas" -> "Thomas Aquinas"
+                term.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+            ];
 
             for (const variant of variations) {
                 for (const lang of tryLanguages) {
