@@ -34,12 +34,11 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Header */
         header {
             text-align: center;
             padding: 30px 20px;
@@ -57,11 +56,10 @@
         header p {
             opacity: 0.9;
             font-size: 1rem;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
-        /* Search */
         .search-section {
             background: var(--card-bg);
             border-radius: 12px;
@@ -73,10 +71,12 @@
         .search-box {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .search-input {
             flex: 1;
+            min-width: 250px;
             padding: 16px 20px;
             font-size: 1.1rem;
             border: 2px solid var(--border);
@@ -90,12 +90,10 @@
             box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
         }
 
-        .search-btn {
-            padding: 16px 32px;
+        .btn {
+            padding: 16px 28px;
             font-size: 1rem;
             font-weight: 600;
-            background: var(--primary);
-            color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
@@ -106,18 +104,32 @@
             white-space: nowrap;
         }
 
-        .search-btn:hover {
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-1px);
         }
 
-        .search-btn:disabled {
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2d9249;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
             background: #9aa0a6;
             cursor: not-allowed;
             transform: none;
         }
 
-        /* Loading */
         .loader {
             width: 20px;
             height: 20px;
@@ -140,7 +152,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Progress */
         .progress-section {
             margin-top: 20px;
             display: none;
@@ -151,9 +162,9 @@
         }
 
         .progress-bar {
-            height: 6px;
+            height: 8px;
             background: var(--border);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
             margin-bottom: 10px;
         }
@@ -161,7 +172,7 @@
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--success));
-            border-radius: 3px;
+            border-radius: 4px;
             transition: width 0.3s;
             width: 0%;
         }
@@ -172,7 +183,6 @@
             text-align: center;
         }
 
-        /* Cards */
         .card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -203,7 +213,6 @@
             padding: 24px;
         }
 
-        /* Wikidata section */
         .wikidata-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -251,16 +260,6 @@
             word-break: break-word;
         }
 
-        .wikidata-value a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .wikidata-value a:hover {
-            text-decoration: underline;
-        }
-
-        /* Image */
         .entity-image {
             width: 100%;
             max-width: 300px;
@@ -269,13 +268,139 @@
             display: block;
         }
 
-        /* Languages section */
-        .languages-header {
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background: var(--hover-bg);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .unified-section {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .unified-section-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #4285f4 100%);
+            color: white;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .unified-section-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lang-badges {
+            display: flex;
+            gap: 6px;
             flex-wrap: wrap;
+        }
+
+        .lang-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .unified-section-content {
+            display: none;
+            padding: 0;
+        }
+
+        .unified-section.expanded .unified-section-content {
+            display: block;
+        }
+
+        .unified-section.expanded .expand-indicator {
+            transform: rotate(180deg);
+        }
+
+        .expand-indicator {
+            transition: transform 0.2s;
+        }
+
+        .lang-content-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .lang-content-item:last-child {
+            border-bottom: none;
+        }
+
+        .lang-content-header {
+            display: flex;
+            align-items: center;
             gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .lang-flag {
+            background: var(--text);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .lang-content-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .lang-content-text {
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .lang-content-text p {
+            margin-bottom: 12px;
         }
 
         .lang-count-badge {
@@ -318,25 +443,11 @@
             border-color: var(--primary);
         }
 
-        .action-btn.primary:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Language items */
         .language-item {
             border: 1px solid var(--border);
             border-radius: 10px;
             margin-bottom: 12px;
             overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .language-item:hover {
-            border-color: var(--primary);
-        }
-
-        .language-item.expanded {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .language-header {
@@ -379,7 +490,6 @@
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
-            flex-shrink: 0;
         }
 
         .lang-info {
@@ -395,18 +505,14 @@
         .lang-title {
             font-size: 0.9rem;
             color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .char-count {
+        .section-count {
             font-size: 0.8rem;
             color: var(--text-secondary);
             background: white;
             padding: 4px 10px;
             border-radius: 12px;
-            flex-shrink: 0;
         }
 
         .language-content {
@@ -420,37 +526,33 @@
             display: block;
         }
 
-        .language-summary {
+        .section-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-text {
             line-height: 1.8;
             color: var(--text);
-            margin-bottom: 16px;
         }
 
-        .language-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .small-btn {
-            padding: 6px 12px;
-            font-size: 0.85rem;
-            border: 1px solid var(--border);
-            background: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: var(--text);
-        }
-
-        .small-btn:hover {
-            background: var(--hover-bg);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Filter/Sort */
         .filter-bar {
             display: flex;
             gap: 12px;
@@ -466,25 +568,19 @@
             color: var(--text-secondary);
         }
 
-        .filter-bar select {
+        .filter-bar select, .filter-bar input[type="text"] {
             padding: 8px 12px;
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 0.9rem;
             background: white;
-            cursor: pointer;
         }
 
         .filter-bar input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.9rem;
             flex: 1;
             min-width: 200px;
         }
 
-        /* No results */
         .no-results {
             text-align: center;
             padding: 60px 20px;
@@ -496,11 +592,6 @@
             margin-bottom: 10px;
         }
 
-        .no-results p {
-            color: var(--text-secondary);
-        }
-
-        /* Copy notification */
         .copy-notification {
             position: fixed;
             bottom: 30px;
@@ -520,12 +611,37 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Hidden */
         .hidden {
             display: none !important;
         }
 
-        /* Footer */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            padding: 16px 24px;
+            background: var(--hover-bg);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -538,69 +654,33 @@
             text-decoration: none;
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            .search-box {
-                flex-direction: column;
-            }
-
-            .search-btn {
-                justify-content: center;
-            }
-
-            .wikidata-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .header-actions {
-                width: 100%;
-            }
-
-            .action-btn {
-                flex: 1;
-                justify-content: center;
-            }
-
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-bar input[type="text"] {
-                min-width: unset;
-            }
+            header h1 { font-size: 1.5rem; }
+            .search-box { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+            .wikidata-grid { grid-template-columns: 1fr; }
+            .tabs { flex-wrap: nowrap; }
+            .tab { padding: 12px 16px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Wikipedia Global Research Tool</h1>
-        <p>Busca un tema y obtén información de TODOS los idiomas de Wikipedia. Combina conocimiento de todo el mundo.</p>
+        <p>Busca un tema y recopila TODA la información de TODOS los idiomas. Unifica campos para obtener la descripción más completa posible.</p>
     </header>
 
     <div class="container">
-        <!-- Search Section -->
         <div class="search-section">
             <div class="search-box">
-                <input
-                    type="text"
-                    id="searchInput"
-                    class="search-input"
-                    placeholder="Escribe un nombre, lugar, concepto..."
-                    autocomplete="off"
-                >
-                <button id="searchBtn" class="search-btn">
+                <input type="text" id="searchInput" class="search-input" placeholder="Escribe un nombre, lugar, concepto..." autocomplete="off">
+                <button id="searchBtn" class="btn btn-primary">
                     <span class="loader"></span>
-                    <span class="btn-text">Buscar en todos los idiomas</span>
+                    <span class="btn-text">Buscar</span>
+                </button>
+                <button id="fullAnalysisBtn" class="btn btn-success hidden">
+                    <span class="loader"></span>
+                    <span class="btn-text">Análisis Completo</span>
                 </button>
             </div>
             <div class="progress-section" id="progressSection">
@@ -611,7 +691,6 @@
             </div>
         </div>
 
-        <!-- Wikidata Section -->
         <div class="card hidden" id="wikidataCard">
             <div class="card-header">
                 <h2>📊 Datos Unificados</h2>
@@ -623,43 +702,67 @@
             </div>
         </div>
 
-        <!-- Languages Section -->
-        <div class="card hidden" id="languagesCard">
+        <div class="card hidden" id="resultsCard">
             <div class="card-header">
-                <div class="languages-header">
-                    <h2>📚 Información por Idioma <span class="lang-count-badge" id="langCountBadge">0</span></h2>
-                </div>
+                <h2>📚 Resultados <span class="lang-count-badge" id="langCountBadge">0</span></h2>
                 <div class="header-actions">
                     <button class="action-btn" id="expandAllBtn">Expandir todo</button>
                     <button class="action-btn" id="collapseAllBtn">Colapsar todo</button>
                     <button class="action-btn primary" id="copyAllBtn">📋 Copiar todo</button>
                 </div>
             </div>
-            <div class="filter-bar">
-                <label>Ordenar por:</label>
-                <select id="sortSelect">
-                    <option value="length-desc">Más información primero</option>
-                    <option value="length-asc">Menos información primero</option>
-                    <option value="alpha">Alfabético (idioma)</option>
-                </select>
-                <input type="text" id="filterInput" placeholder="Filtrar idiomas...">
+
+            <div class="tabs" id="tabsContainer">
+                <button class="tab active" data-tab="unified">Vista Unificada</button>
+                <button class="tab" data-tab="by-language">Por Idioma</button>
             </div>
-            <div class="card-body" id="languagesList"></div>
+
+            <div id="statsBar" class="stats-bar hidden">
+                <div class="stat-item">
+                    <span class="stat-value" id="statLanguages">0</span>
+                    <span class="stat-label">Idiomas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statSections">0</span>
+                    <span class="stat-label">Secciones únicas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statChars">0</span>
+                    <span class="stat-label">Caracteres totales</span>
+                </div>
+            </div>
+
+            <div class="tab-content active" id="unifiedTab">
+                <div class="card-body" id="unifiedContent">
+                    <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
+                        Haz clic en <strong>"Análisis Completo"</strong> para obtener todas las secciones de todos los idiomas unificadas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="byLanguageTab">
+                <div class="filter-bar">
+                    <label>Ordenar:</label>
+                    <select id="sortSelect">
+                        <option value="sections-desc">Más secciones primero</option>
+                        <option value="length-desc">Más contenido primero</option>
+                        <option value="alpha">Alfabético</option>
+                    </select>
+                    <input type="text" id="filterInput" placeholder="Filtrar idiomas...">
+                </div>
+                <div class="card-body" id="languagesList"></div>
+            </div>
         </div>
 
-        <!-- No Results -->
         <div class="card hidden" id="noResultsCard">
             <div class="no-results">
                 <h3>No se encontraron resultados</h3>
-                <p>Intenta con otro término de búsqueda. Prueba nombres propios, lugares, conceptos...</p>
+                <p>Intenta con otro término de búsqueda.</p>
             </div>
         </div>
     </div>
 
-    <!-- Copy Notification -->
-    <div class="copy-notification" id="copyNotification">
-        ✓ Copiado al portapapeles
-    </div>
+    <div class="copy-notification" id="copyNotification">✓ Copiado al portapapeles</div>
 
     <footer>
         <p>Datos de <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a> y <a href="https://www.wikidata.org" target="_blank">Wikidata</a></p>
@@ -668,27 +771,74 @@
     <script>
         // ============ STATE ============
         let currentData = null;
+        let fullAnalysisData = null;
         let allLanguagesData = [];
 
         // ============ DOM ELEMENTS ============
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
+        const fullAnalysisBtn = document.getElementById('fullAnalysisBtn');
         const progressSection = document.getElementById('progressSection');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         const wikidataCard = document.getElementById('wikidataCard');
         const wikidataGrid = document.getElementById('wikidataGrid');
         const entityImage = document.getElementById('entityImage');
-        const languagesCard = document.getElementById('languagesCard');
+        const resultsCard = document.getElementById('resultsCard');
         const langCountBadge = document.getElementById('langCountBadge');
+        const unifiedContent = document.getElementById('unifiedContent');
         const languagesList = document.getElementById('languagesList');
         const noResultsCard = document.getElementById('noResultsCard');
         const sortSelect = document.getElementById('sortSelect');
         const filterInput = document.getElementById('filterInput');
-        const expandAllBtn = document.getElementById('expandAllBtn');
-        const collapseAllBtn = document.getElementById('collapseAllBtn');
-        const copyAllBtn = document.getElementById('copyAllBtn');
         const copyNotification = document.getElementById('copyNotification');
+        const statsBar = document.getElementById('statsBar');
+
+        // ============ SECTION MAPPING ============
+        const SECTION_KEYWORDS = {
+            'biography': ['biography', 'biografía', 'biographie', 'biografie', 'biografia', 'βιογραφία', 'vida', 'life', 'leben', 'vie'],
+            'early_life': ['early life', 'primeros años', 'infancia', 'childhood', 'juventud', 'youth', 'enfance', 'kindheit', 'early years', 'nacimiento'],
+            'career': ['career', 'carrera', 'carrière', 'karriere', 'carriera', 'trayectoria', 'professional life', 'trabajo'],
+            'works': ['works', 'obras', 'œuvres', 'werke', 'opere', 'trabajos', 'publications', 'publicaciones', 'bibliography', 'bibliografía', 'filmography', 'filmografía', 'discography', 'discografía'],
+            'legacy': ['legacy', 'legado', 'héritage', 'vermächtnis', 'eredità', 'influence', 'influencia', 'impact', 'impacto'],
+            'death': ['death', 'muerte', 'mort', 'tod', 'morte', 'fallecimiento', 'deceso'],
+            'awards': ['awards', 'premios', 'prix', 'auszeichnungen', 'premi', 'honors', 'honores', 'recognition', 'reconocimientos'],
+            'personal_life': ['personal life', 'vida personal', 'vie privée', 'privatleben', 'vita privata', 'family', 'familia', 'famille'],
+            'education': ['education', 'educación', 'éducation', 'bildung', 'istruzione', 'formación', 'studies', 'estudios'],
+            'history': ['history', 'historia', 'histoire', 'geschichte', 'storia', 'historical'],
+            'geography': ['geography', 'geografía', 'géographie', 'geographie', 'geografia', 'location', 'ubicación', 'localización'],
+            'architecture': ['architecture', 'arquitectura', 'architektur', 'architettura', 'construction', 'construcción', 'building', 'edificio'],
+            'culture': ['culture', 'cultura', 'kultur', 'traditions', 'tradiciones', 'customs', 'costumbres'],
+            'economy': ['economy', 'economía', 'économie', 'wirtschaft', 'economia', 'economic'],
+            'politics': ['politics', 'política', 'politique', 'politik', 'politica', 'government', 'gobierno'],
+            'demographics': ['demographics', 'demografía', 'démographie', 'demografie', 'population', 'población'],
+            'references': ['references', 'referencias', 'références', 'einzelnachweise', 'riferimenti', 'notes', 'notas'],
+            'see_also': ['see also', 'véase también', 'voir aussi', 'siehe auch', 'vedi anche', 'related'],
+            'external_links': ['external links', 'enlaces externos', 'liens externes', 'weblinks', 'collegamenti esterni']
+        };
+
+        const SECTION_LABELS = {
+            'biography': '📜 Biografía',
+            'early_life': '👶 Primeros años',
+            'career': '💼 Carrera',
+            'works': '📚 Obras',
+            'legacy': '🏛️ Legado',
+            'death': '✝️ Fallecimiento',
+            'awards': '🏆 Premios',
+            'personal_life': '👨‍👩‍👧 Vida personal',
+            'education': '🎓 Educación',
+            'history': '📖 Historia',
+            'geography': '🗺️ Geografía',
+            'architecture': '🏗️ Arquitectura',
+            'culture': '🎭 Cultura',
+            'economy': '💰 Economía',
+            'politics': '🏛️ Política',
+            'demographics': '👥 Demografía',
+            'references': '📑 Referencias',
+            'see_also': '🔗 Ver también',
+            'external_links': '🌐 Enlaces externos',
+            'other': '📄 Otros'
+        };
 
         // ============ WIKIDATA PROPERTIES ============
         const WIKIDATA_PROPS = {
@@ -700,19 +850,10 @@
             'P27': { label: 'Nacionalidad', icon: '🌍' },
             'P106': { label: 'Ocupación', icon: '💼' },
             'P800': { label: 'Obras notables', icon: '📖' },
-            'P26': { label: 'Cónyuge', icon: '💑' },
-            'P22': { label: 'Padre', icon: '👨' },
-            'P25': { label: 'Madre', icon: '👩' },
-            'P40': { label: 'Hijos', icon: '👶' },
-            'P69': { label: 'Educación', icon: '🎓' },
-            'P108': { label: 'Empleador', icon: '🏢' },
             'P166': { label: 'Premios', icon: '🏆' },
             'P17': { label: 'País', icon: '🏳️' },
             'P131': { label: 'Ubicación', icon: '📍' },
-            'P625': { label: 'Coordenadas', icon: '🗺️' },
-            'P571': { label: 'Fecha de fundación', icon: '📅' },
-            'P112': { label: 'Fundador', icon: '👤' },
-            'P159': { label: 'Sede', icon: '🏛️' },
+            'P571': { label: 'Fundación', icon: '📅' },
             'P856': { label: 'Sitio web', icon: '🌐' },
             'P18': { label: 'Imagen', icon: '🖼️' }
         };
@@ -722,12 +863,12 @@
             const term = searchInput.value.trim();
             if (!term) return;
 
-            setLoading(true);
+            setLoading(searchBtn, true);
             hideAllCards();
             showProgress();
+            fullAnalysisBtn.classList.add('hidden');
 
             try {
-                // Step 1: Search and find the entity
                 updateProgress(5, 'Buscando artículo...');
                 const searchResult = await searchWikipedia(term);
 
@@ -736,28 +877,19 @@
                     return;
                 }
 
-                // Step 2: Get Wikidata entity
                 updateProgress(15, 'Obteniendo datos de Wikidata...');
                 const wikidataId = await getWikidataId(searchResult.lang, searchResult.title);
+                let wikidataEntity = wikidataId ? await getWikidataEntity(wikidataId) : null;
 
-                let wikidataEntity = null;
-                if (wikidataId) {
-                    wikidataEntity = await getWikidataEntity(wikidataId);
-                }
-
-                // Step 3: Get all available languages
-                updateProgress(25, 'Descubriendo idiomas disponibles...');
+                updateProgress(25, 'Descubriendo idiomas...');
                 const langLinks = await getLanguageLinks(searchResult.lang, searchResult.title);
-
-                // Add the original language
                 langLinks[searchResult.lang] = searchResult.title;
 
                 const totalLangs = Object.keys(langLinks).length;
-                updateProgress(30, `Encontrados ${totalLangs} idiomas. Cargando contenido...`);
+                updateProgress(30, `Encontrados ${totalLangs} idiomas. Cargando resúmenes...`);
 
-                // Step 4: Fetch summaries from all languages in parallel batches
                 const langEntries = Object.entries(langLinks);
-                const batchSize = 10;
+                const batchSize = 15;
                 const allResults = [];
 
                 for (let i = 0; i < langEntries.length; i += batchSize) {
@@ -766,17 +898,12 @@
                         batch.map(([lang, title]) => fetchSummary(lang, title))
                     );
                     allResults.push(...batchResults);
-
                     const progress = 30 + Math.round((i / langEntries.length) * 60);
-                    updateProgress(progress, `Cargando idiomas... ${Math.min(i + batchSize, langEntries.length)}/${totalLangs}`);
+                    updateProgress(progress, `Cargando resúmenes... ${Math.min(i + batchSize, langEntries.length)}/${totalLangs}`);
                 }
 
-                // Filter out failed requests
                 allLanguagesData = allResults.filter(r => r && r.summary);
 
-                updateProgress(95, 'Procesando resultados...');
-
-                // Step 5: Display results
                 if (allLanguagesData.length === 0) {
                     showNoResults();
                     return;
@@ -785,29 +912,75 @@
                 currentData = {
                     term: term,
                     wikidata: wikidataEntity,
+                    langLinks: langLinks,
                     languages: allLanguagesData
                 };
 
                 displayWikidata(wikidataEntity);
-                displayLanguages(allLanguagesData);
+                displayBasicResults(allLanguagesData);
 
+                fullAnalysisBtn.classList.remove('hidden');
                 updateProgress(100, '¡Completado!');
-
-                setTimeout(() => {
-                    hideProgress();
-                }, 500);
+                setTimeout(hideProgress, 500);
 
             } catch (error) {
                 console.error('Search error:', error);
                 showNoResults();
             } finally {
-                setLoading(false);
+                setLoading(searchBtn, false);
             }
         }
 
-        // ============ WIKIPEDIA API ============
+        // ============ FULL ANALYSIS ============
+        async function runFullAnalysis() {
+            if (!currentData) return;
+
+            setLoading(fullAnalysisBtn, true);
+            showProgress();
+
+            try {
+                const langLinks = currentData.langLinks;
+                const langEntries = Object.entries(langLinks);
+                const totalLangs = langEntries.length;
+
+                updateProgress(5, `Iniciando análisis completo de ${totalLangs} idiomas...`);
+
+                const batchSize = 5;
+                const fullResults = [];
+
+                for (let i = 0; i < langEntries.length; i += batchSize) {
+                    const batch = langEntries.slice(i, i + batchSize);
+                    const batchResults = await Promise.all(
+                        batch.map(([lang, title]) => fetchFullArticle(lang, title))
+                    );
+                    fullResults.push(...batchResults);
+                    const progress = 5 + Math.round((i / langEntries.length) * 85);
+                    updateProgress(progress, `Analizando artículos... ${Math.min(i + batchSize, langEntries.length)}/${totalLangs}`);
+                }
+
+                const validResults = fullResults.filter(r => r && r.sections && r.sections.length > 0);
+
+                updateProgress(95, 'Unificando secciones...');
+
+                fullAnalysisData = {
+                    languages: validResults,
+                    unified: unifyAllSections(validResults)
+                };
+
+                displayFullAnalysis(fullAnalysisData);
+
+                updateProgress(100, '¡Análisis completo!');
+                setTimeout(hideProgress, 500);
+
+            } catch (error) {
+                console.error('Full analysis error:', error);
+            } finally {
+                setLoading(fullAnalysisBtn, false);
+            }
+        }
+
+        // ============ FETCH FUNCTIONS ============
         async function searchWikipedia(term) {
-            // Try multiple languages to find the article
             const tryLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'];
             const variations = [term, term.toLowerCase(), titleCase(term)];
 
@@ -816,16 +989,11 @@
                     try {
                         const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(variant)}`;
                         const response = await fetch(url);
-
                         if (response.ok) {
                             const data = await response.json();
-                            if (data.extract) {
-                                return { lang, title: data.title };
-                            }
+                            if (data.extract) return { lang, title: data.title };
                         }
-                    } catch (e) {
-                        continue;
-                    }
+                    } catch (e) { continue; }
                 }
             }
             return null;
@@ -833,169 +1001,204 @@
 
         async function getLanguageLinks(lang, title) {
             const url = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
-                action: 'query',
-                titles: title,
-                prop: 'langlinks',
-                lllimit: '500',
-                format: 'json',
-                origin: '*'
+                action: 'query', titles: title, prop: 'langlinks', lllimit: '500', format: 'json', origin: '*'
             });
-
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 const pages = data.query.pages;
                 const pageId = Object.keys(pages)[0];
                 const langlinks = pages[pageId]?.langlinks || [];
-
                 const result = {};
-                langlinks.forEach(ll => {
-                    result[ll.lang] = ll['*'];
-                });
+                langlinks.forEach(ll => { result[ll.lang] = ll['*']; });
                 return result;
-            } catch (error) {
-                return {};
-            }
+            } catch (error) { return {}; }
         }
 
         async function fetchSummary(lang, title) {
             try {
                 const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
                 const response = await fetch(url);
-
                 if (!response.ok) return null;
-
                 const data = await response.json();
-
                 return {
-                    lang: lang,
-                    langName: getLanguageName(lang),
-                    title: data.title,
+                    lang, langName: getLanguageName(lang), title: data.title,
                     summary: data.extract || '',
                     url: data.content_urls?.desktop?.page || `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`,
                     charCount: (data.extract || '').length
                 };
+            } catch (error) { return null; }
+        }
+
+        async function fetchFullArticle(lang, title) {
+            try {
+                // Get sections
+                const sectionsUrl = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
+                    action: 'parse', page: title, prop: 'sections', format: 'json', origin: '*'
+                });
+                const sectionsResp = await fetch(sectionsUrl);
+                const sectionsData = await sectionsResp.json();
+
+                if (sectionsData.error) return null;
+
+                const sectionsList = sectionsData.parse?.sections || [];
+
+                // Get full text content
+                const contentUrl = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
+                    action: 'query', titles: title, prop: 'extracts', explaintext: '1', format: 'json', origin: '*'
+                });
+                const contentResp = await fetch(contentUrl);
+                const contentData = await contentResp.json();
+                const pages = contentData.query?.pages || {};
+                const pageId = Object.keys(pages)[0];
+                const fullText = pages[pageId]?.extract || '';
+
+                // Parse sections from full text
+                const sections = parseFullTextIntoSections(fullText, sectionsList);
+
+                return {
+                    lang,
+                    langName: getLanguageName(lang),
+                    title,
+                    sections,
+                    totalChars: fullText.length,
+                    url: `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`
+                };
             } catch (error) {
+                console.error(`Error fetching ${lang}:${title}`, error);
                 return null;
             }
         }
 
-        // ============ WIKIDATA API ============
+        function parseFullTextIntoSections(fullText, sectionsList) {
+            const sections = [];
+            const lines = fullText.split('\n');
+            let currentSection = { title: 'Introducción', content: [], level: 0 };
+
+            const sectionTitles = sectionsList.map(s => s.line.toLowerCase());
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed) continue;
+
+                // Check if this line is a section header
+                const isHeader = sectionTitles.some(st =>
+                    trimmed.toLowerCase() === st ||
+                    trimmed.toLowerCase().startsWith(st + ' ')
+                );
+
+                if (isHeader && currentSection.content.length > 0) {
+                    sections.push({
+                        title: currentSection.title,
+                        content: currentSection.content.join('\n\n'),
+                        level: currentSection.level
+                    });
+                    currentSection = { title: trimmed, content: [], level: 1 };
+                } else if (trimmed.length > 2) {
+                    // Check for == Section == pattern
+                    const headerMatch = trimmed.match(/^(={2,})\s*(.+?)\s*\1$/);
+                    if (headerMatch) {
+                        if (currentSection.content.length > 0) {
+                            sections.push({
+                                title: currentSection.title,
+                                content: currentSection.content.join('\n\n'),
+                                level: currentSection.level
+                            });
+                        }
+                        currentSection = {
+                            title: headerMatch[2],
+                            content: [],
+                            level: headerMatch[1].length - 1
+                        };
+                    } else {
+                        currentSection.content.push(trimmed);
+                    }
+                }
+            }
+
+            // Add last section
+            if (currentSection.content.length > 0) {
+                sections.push({
+                    title: currentSection.title,
+                    content: currentSection.content.join('\n\n'),
+                    level: currentSection.level
+                });
+            }
+
+            return sections;
+        }
+
+        // ============ SECTION UNIFICATION ============
+        function classifySection(sectionTitle) {
+            const lower = sectionTitle.toLowerCase();
+
+            for (const [category, keywords] of Object.entries(SECTION_KEYWORDS)) {
+                for (const keyword of keywords) {
+                    if (lower.includes(keyword)) {
+                        return category;
+                    }
+                }
+            }
+            return 'other';
+        }
+
+        function unifyAllSections(languageResults) {
+            const unified = {};
+
+            for (const langData of languageResults) {
+                for (const section of langData.sections) {
+                    const category = classifySection(section.title);
+
+                    if (!unified[category]) {
+                        unified[category] = {
+                            label: SECTION_LABELS[category] || category,
+                            contents: []
+                        };
+                    }
+
+                    unified[category].contents.push({
+                        lang: langData.lang,
+                        langName: langData.langName,
+                        originalTitle: section.title,
+                        content: section.content,
+                        url: langData.url
+                    });
+                }
+            }
+
+            // Sort by number of languages contributing
+            const sorted = Object.entries(unified)
+                .sort((a, b) => b[1].contents.length - a[1].contents.length)
+                .filter(([key]) => key !== 'references' && key !== 'see_also' && key !== 'external_links');
+
+            return sorted;
+        }
+
+        // ============ WIKIDATA ============
         async function getWikidataId(lang, title) {
             const url = `https://${lang}.wikipedia.org/w/api.php?` + new URLSearchParams({
-                action: 'query',
-                titles: title,
-                prop: 'pageprops',
-                format: 'json',
-                origin: '*'
+                action: 'query', titles: title, prop: 'pageprops', format: 'json', origin: '*'
             });
-
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 const pages = data.query.pages;
                 const pageId = Object.keys(pages)[0];
                 return pages[pageId]?.pageprops?.wikibase_item || null;
-            } catch (error) {
-                return null;
-            }
+            } catch (error) { return null; }
         }
 
         async function getWikidataEntity(qid) {
             const url = `https://www.wikidata.org/w/api.php?` + new URLSearchParams({
-                action: 'wbgetentities',
-                ids: qid,
-                props: 'labels|descriptions|claims',
-                languages: 'es|en',
-                format: 'json',
-                origin: '*'
+                action: 'wbgetentities', ids: qid, props: 'labels|descriptions|claims', languages: 'es|en', format: 'json', origin: '*'
             });
-
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 return data.entities?.[qid] || null;
-            } catch (error) {
-                return null;
-            }
+            } catch (error) { return null; }
         }
 
-        function extractWikidataValue(claim) {
-            if (!claim || !claim[0]) return null;
-
-            const mainsnak = claim[0].mainsnak;
-            if (!mainsnak.datavalue) return null;
-
-            const value = mainsnak.datavalue.value;
-            const type = mainsnak.datavalue.type;
-
-            switch (type) {
-                case 'string':
-                    return value;
-                case 'time':
-                    return formatWikidataDate(value.time);
-                case 'wikibase-entityid':
-                    return { id: value.id, needsLabel: true };
-                case 'quantity':
-                    return value.amount;
-                case 'globecoordinate':
-                    return `${value.latitude.toFixed(4)}, ${value.longitude.toFixed(4)}`;
-                case 'monolingualtext':
-                    return value.text;
-                default:
-                    return null;
-            }
-        }
-
-        function formatWikidataDate(timeStr) {
-            // Format: +1452-04-15T00:00:00Z
-            const match = timeStr.match(/([+-]?\d+)-(\d{2})-(\d{2})/);
-            if (match) {
-                const year = parseInt(match[1]);
-                const month = parseInt(match[2]);
-                const day = parseInt(match[3]);
-
-                if (month === 0 && day === 0) return `${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
-                if (day === 0) return `${getMonthName(month)} ${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
-                return `${day} ${getMonthName(month)} ${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
-            }
-            return timeStr;
-        }
-
-        function getMonthName(month) {
-            const months = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-                           'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-            return months[month] || '';
-        }
-
-        async function resolveWikidataLabels(ids) {
-            if (ids.length === 0) return {};
-
-            const url = `https://www.wikidata.org/w/api.php?` + new URLSearchParams({
-                action: 'wbgetentities',
-                ids: ids.join('|'),
-                props: 'labels',
-                languages: 'es|en',
-                format: 'json',
-                origin: '*'
-            });
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const labels = {};
-
-                for (const [id, entity] of Object.entries(data.entities || {})) {
-                    labels[id] = entity.labels?.es?.value || entity.labels?.en?.value || id;
-                }
-
-                return labels;
-            } catch (error) {
-                return {};
-            }
-        }
-
-        // ============ DISPLAY FUNCTIONS ============
         async function displayWikidata(entity) {
             if (!entity) {
                 wikidataCard.classList.add('hidden');
@@ -1006,7 +1209,6 @@
             const items = [];
             const idsToResolve = [];
 
-            // Extract values and collect IDs that need label resolution
             for (const [prop, config] of Object.entries(WIKIDATA_PROPS)) {
                 if (claims[prop]) {
                     const value = extractWikidataValue(claims[prop]);
@@ -1021,36 +1223,28 @@
                 }
             }
 
-            // Resolve entity labels
             const labels = await resolveWikidataLabels(idsToResolve);
 
-            // Check for image
             if (claims['P18']) {
                 const imageName = extractWikidataValue(claims['P18']);
                 if (imageName) {
-                    const imageUrl = getCommonsImageUrl(imageName);
-                    entityImage.src = imageUrl;
+                    entityImage.src = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(imageName.replace(/ /g, '_'))}?width=300`;
                     entityImage.classList.remove('hidden');
                 }
             } else {
                 entityImage.classList.add('hidden');
             }
 
-            // Build grid
             wikidataGrid.innerHTML = items
-                .filter(item => item.prop !== 'P18') // Exclude image from grid
+                .filter(item => item.prop !== 'P18')
                 .map(item => {
                     const displayValue = item.needsLabel ? (labels[item.value] || item.value) : item.value;
-                    const isUrl = typeof displayValue === 'string' && displayValue.startsWith('http');
-
                     return `
                         <div class="wikidata-item">
                             <div class="wikidata-icon">${item.config.icon}</div>
                             <div class="wikidata-content">
                                 <div class="wikidata-label">${item.config.label}</div>
-                                <div class="wikidata-value">
-                                    ${isUrl ? `<a href="${displayValue}" target="_blank">${displayValue}</a>` : displayValue}
-                                </div>
+                                <div class="wikidata-value">${displayValue}</div>
                             </div>
                         </div>
                     `;
@@ -1059,48 +1253,216 @@
             wikidataCard.classList.remove('hidden');
         }
 
-        function getCommonsImageUrl(filename) {
-            // Generate Wikimedia Commons thumbnail URL
-            const encoded = encodeURIComponent(filename.replace(/ /g, '_'));
-            return `https://commons.wikimedia.org/wiki/Special:FilePath/${encoded}?width=300`;
+        function extractWikidataValue(claim) {
+            if (!claim || !claim[0]) return null;
+            const mainsnak = claim[0].mainsnak;
+            if (!mainsnak.datavalue) return null;
+            const value = mainsnak.datavalue.value;
+            const type = mainsnak.datavalue.type;
+
+            switch (type) {
+                case 'string': return value;
+                case 'time': return formatWikidataDate(value.time);
+                case 'wikibase-entityid': return { id: value.id, needsLabel: true };
+                case 'quantity': return value.amount;
+                case 'globecoordinate': return `${value.latitude.toFixed(4)}, ${value.longitude.toFixed(4)}`;
+                default: return null;
+            }
         }
 
-        function displayLanguages(languages) {
+        function formatWikidataDate(timeStr) {
+            const match = timeStr.match(/([+-]?\d+)-(\d{2})-(\d{2})/);
+            if (match) {
+                const year = parseInt(match[1]);
+                const month = parseInt(match[2]);
+                const day = parseInt(match[3]);
+                const months = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+                if (month === 0 && day === 0) return `${Math.abs(year)}${year < 0 ? ' a.C.' : ''}`;
+                if (day === 0) return `${months[month]} ${Math.abs(year)}`;
+                return `${day} ${months[month]} ${Math.abs(year)}`;
+            }
+            return timeStr;
+        }
+
+        async function resolveWikidataLabels(ids) {
+            if (ids.length === 0) return {};
+            const url = `https://www.wikidata.org/w/api.php?` + new URLSearchParams({
+                action: 'wbgetentities', ids: ids.join('|'), props: 'labels', languages: 'es|en', format: 'json', origin: '*'
+            });
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const labels = {};
+                for (const [id, entity] of Object.entries(data.entities || {})) {
+                    labels[id] = entity.labels?.es?.value || entity.labels?.en?.value || id;
+                }
+                return labels;
+            } catch (error) { return {}; }
+        }
+
+        // ============ DISPLAY FUNCTIONS ============
+        function displayBasicResults(languages) {
             langCountBadge.textContent = languages.length;
-            renderLanguageList(languages);
-            languagesCard.classList.remove('hidden');
-        }
 
-        function renderLanguageList(languages) {
             languagesList.innerHTML = languages.map((lang, index) => `
                 <div class="language-item" data-index="${index}">
-                    <div class="language-header" onclick="toggleLanguage(${index})">
+                    <div class="language-header" onclick="toggleLanguageItem(${index})">
                         <div class="expand-icon">▼</div>
                         <span class="lang-code">${lang.lang}</span>
                         <div class="lang-info">
                             <div class="lang-name">${lang.langName}</div>
                             <div class="lang-title">${lang.title}</div>
                         </div>
-                        <span class="char-count">${formatNumber(lang.charCount)} caracteres</span>
+                        <span class="section-count">${formatNumber(lang.charCount)} chars</span>
                     </div>
                     <div class="language-content">
-                        <p class="language-summary">${lang.summary}</p>
-                        <div class="language-actions">
-                            <a href="${lang.url}" target="_blank" class="small-btn">🔗 Ver en Wikipedia</a>
-                            <button class="small-btn" onclick="copyText('${escapeForJs(lang.summary)}', event)">📋 Copiar texto</button>
-                            <button class="small-btn" onclick="copyText('${escapeForJs(lang.title)}', event)">📋 Copiar título</button>
+                        <p class="section-text">${lang.summary}</p>
+                        <div style="margin-top: 15px;">
+                            <a href="${lang.url}" target="_blank" class="action-btn">🔗 Ver en Wikipedia</a>
                         </div>
                     </div>
                 </div>
             `).join('');
+
+            resultsCard.classList.remove('hidden');
+            switchTab('by-language');
         }
 
-        function toggleLanguage(index) {
+        function displayFullAnalysis(data) {
+            const { languages, unified } = data;
+
+            // Stats
+            const totalChars = languages.reduce((sum, l) => sum + l.totalChars, 0);
+            const uniqueSections = unified.length;
+
+            document.getElementById('statLanguages').textContent = languages.length;
+            document.getElementById('statSections').textContent = uniqueSections;
+            document.getElementById('statChars').textContent = formatNumber(totalChars);
+            statsBar.classList.remove('hidden');
+
+            // Unified view
+            unifiedContent.innerHTML = unified.map(([category, data], index) => `
+                <div class="unified-section ${index < 3 ? 'expanded' : ''}" data-category="${category}">
+                    <div class="unified-section-header" onclick="toggleUnifiedSection('${category}')">
+                        <h3>
+                            ${data.label}
+                            <span style="font-weight: normal; font-size: 0.85rem; opacity: 0.8;">(${data.contents.length} idiomas)</span>
+                        </h3>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="lang-badges">
+                                ${data.contents.slice(0, 5).map(c => `<span class="lang-badge">${c.lang}</span>`).join('')}
+                                ${data.contents.length > 5 ? `<span class="lang-badge">+${data.contents.length - 5}</span>` : ''}
+                            </div>
+                            <span class="expand-indicator">▼</span>
+                        </div>
+                    </div>
+                    <div class="unified-section-content">
+                        ${data.contents.map(content => `
+                            <div class="lang-content-item">
+                                <div class="lang-content-header">
+                                    <span class="lang-flag">${content.lang}</span>
+                                    <span class="lang-content-title">${content.langName} - ${content.originalTitle}</span>
+                                </div>
+                                <div class="lang-content-text">
+                                    ${content.content.split('\n').map(p => `<p>${p}</p>`).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // By language view with sections
+            languagesList.innerHTML = languages.map((lang, index) => `
+                <div class="language-item" data-index="${index}">
+                    <div class="language-header" onclick="toggleLanguageItem(${index})">
+                        <div class="expand-icon">▼</div>
+                        <span class="lang-code">${lang.lang}</span>
+                        <div class="lang-info">
+                            <div class="lang-name">${lang.langName}</div>
+                            <div class="lang-title">${lang.title}</div>
+                        </div>
+                        <span class="section-count">${lang.sections.length} secciones</span>
+                    </div>
+                    <div class="language-content">
+                        ${lang.sections.map(section => `
+                            <div class="section-item">
+                                <div class="section-title">
+                                    ${SECTION_LABELS[classifySection(section.title)] ? SECTION_LABELS[classifySection(section.title)].split(' ')[0] : '📄'}
+                                    ${section.title}
+                                </div>
+                                <div class="section-text">${section.content.substring(0, 1000)}${section.content.length > 1000 ? '...' : ''}</div>
+                            </div>
+                        `).join('')}
+                        <div style="margin-top: 15px;">
+                            <a href="${lang.url}" target="_blank" class="action-btn">🔗 Ver artículo completo</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            switchTab('unified');
+        }
+
+        // ============ UI HELPERS ============
+        function toggleLanguageItem(index) {
             const item = document.querySelector(`.language-item[data-index="${index}"]`);
             item.classList.toggle('expanded');
         }
 
-        // ============ UTILITY FUNCTIONS ============
+        function toggleUnifiedSection(category) {
+            const section = document.querySelector(`.unified-section[data-category="${category}"]`);
+            section.classList.toggle('expanded');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId === 'unified' ? 'unifiedTab' : 'byLanguageTab'}`).classList.add('active');
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.language-item, .unified-section').forEach(item => item.classList.add('expanded'));
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.language-item, .unified-section').forEach(item => item.classList.remove('expanded'));
+        }
+
+        function copyAllContent() {
+            if (!fullAnalysisData && !currentData) return;
+
+            let content = `# ${currentData.term}\n\n`;
+
+            if (fullAnalysisData) {
+                content += `## Análisis Completo\n\n`;
+                content += `- Idiomas: ${fullAnalysisData.languages.length}\n`;
+                content += `- Secciones únicas: ${fullAnalysisData.unified.length}\n\n`;
+
+                for (const [category, data] of fullAnalysisData.unified) {
+                    content += `## ${data.label}\n\n`;
+                    for (const item of data.contents) {
+                        content += `### ${item.langName} (${item.lang})\n`;
+                        content += `*${item.originalTitle}*\n\n`;
+                        content += `${item.content}\n\n`;
+                    }
+                    content += `---\n\n`;
+                }
+            } else {
+                for (const lang of currentData.languages) {
+                    content += `## ${lang.langName} (${lang.lang})\n`;
+                    content += `**${lang.title}**\n\n`;
+                    content += `${lang.summary}\n\n---\n\n`;
+                }
+            }
+
+            navigator.clipboard.writeText(content).then(() => {
+                showCopyNotification('✓ Copiado al portapapeles');
+            });
+        }
+
+        // ============ UTILITIES ============
         function getLanguageName(code) {
             const names = {
                 'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch',
@@ -1113,46 +1475,24 @@
                 'fa': 'فارسی', 'hi': 'हिन्दी', 'bn': 'বাংলা', 'la': 'Latina',
                 'eu': 'Euskara', 'gl': 'Galego', 'hr': 'Hrvatski', 'sk': 'Slovenčina',
                 'sr': 'Српски', 'bg': 'Български', 'lt': 'Lietuvių', 'sl': 'Slovenščina',
-                'et': 'Eesti', 'lv': 'Latviešu', 'ms': 'Bahasa Melayu', 'ta': 'தமிழ்',
-                'te': 'తెలుగు', 'ml': 'മലയാളം', 'mr': 'मराठी', 'kn': 'ಕನ್ನಡ',
-                'gu': 'ગુજરાતી', 'pa': 'ਪੰਜਾਬੀ', 'or': 'ଓଡ଼ିଆ', 'as': 'অসমীয়া',
-                'ne': 'नेपाली', 'si': 'සිංහල', 'my': 'မြန်မာ', 'km': 'ភាសាខ្មែរ',
-                'ka': 'ქართული', 'hy': 'Հայերdelays', 'az': 'Azərbaycan', 'uz': 'Oʻzbek',
-                'kk': 'Қазақ', 'ky': 'Кыргыз', 'tg': 'Тоҷикӣ', 'mn': 'Монгол',
-                'af': 'Afrikaans', 'sw': 'Kiswahili', 'yo': 'Yorùbá', 'zu': 'Zulu',
-                'simple': 'Simple English', 'war': 'Winaray', 'ceb': 'Cebuano',
-                'min': 'Minangkabau', 'jv': 'Basa Jawa', 'su': 'Basa Sunda',
-                'eo': 'Esperanto', 'cy': 'Cymraeg', 'ga': 'Gaeilge', 'gd': 'Gàidhlig',
-                'br': 'Brezhoneg', 'oc': 'Occitan', 'an': 'Aragonés', 'ast': 'Asturianu',
-                'nds': 'Plattdüütsch', 'lb': 'Lëtzebuergesch', 'fy': 'Frysk',
-                'is': 'Íslenska', 'fo': 'Føroyskt', 'nn': 'Nynorsk', 'nb': 'Bokmål',
-                'sh': 'Srpskohrvatski', 'bs': 'Bosanski', 'mk': 'Македонски',
-                'sq': 'Shqip', 'be': 'Беларуская', 'tt': 'Татар', 'ba': 'Башҡорт',
-                'cv': 'Чӑваш', 'ce': 'Нохчийн', 'sco': 'Scots', 'nap': 'Napulitano',
-                'vec': 'Vèneto', 'lmo': 'Lombard', 'pms': 'Piemontèis', 'scn': 'Sicilianu',
-                'wa': 'Walon', 'als': 'Alemannisch', 'bar': 'Boarisch', 'frr': 'Nordfriisk',
-                'li': 'Limburgs', 'vls': 'West-Vlams', 'zea': 'Zeêuws'
+                'et': 'Eesti', 'lv': 'Latviešu', 'ms': 'Bahasa Melayu', 'simple': 'Simple English',
+                'eo': 'Esperanto', 'cy': 'Cymraeg', 'ga': 'Gaeilge', 'af': 'Afrikaans',
+                'sw': 'Kiswahili', 'ta': 'தமிழ்', 'te': 'తెలుగు', 'ml': 'മലയാളം'
             };
             return names[code] || code.toUpperCase();
         }
 
         function titleCase(str) {
-            return str.replace(/\w\S*/g, txt =>
-                txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-            );
+            return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
         }
 
         function formatNumber(num) {
             return num.toLocaleString();
         }
 
-        function escapeForJs(str) {
-            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
-        }
-
-        function setLoading(loading) {
-            searchBtn.disabled = loading;
-            searchBtn.classList.toggle('loading', loading);
+        function setLoading(btn, loading) {
+            btn.disabled = loading;
+            btn.classList.toggle('loading', loading);
         }
 
         function showProgress() {
@@ -1170,118 +1510,60 @@
 
         function hideAllCards() {
             wikidataCard.classList.add('hidden');
-            languagesCard.classList.add('hidden');
+            resultsCard.classList.add('hidden');
             noResultsCard.classList.add('hidden');
+            statsBar.classList.add('hidden');
         }
 
         function showNoResults() {
             noResultsCard.classList.remove('hidden');
             hideProgress();
-            setLoading(false);
+            setLoading(searchBtn, false);
         }
 
-        function showCopyNotification(text = '✓ Copiado al portapapeles') {
+        function showCopyNotification(text) {
             copyNotification.textContent = text;
             copyNotification.classList.add('visible');
-            setTimeout(() => {
-                copyNotification.classList.remove('visible');
-            }, 2000);
-        }
-
-        // ============ ACTIONS ============
-        function copyText(text, event) {
-            if (event) event.stopPropagation();
-            navigator.clipboard.writeText(text).then(() => {
-                showCopyNotification();
-            });
-        }
-
-        function copyAllContent() {
-            if (!currentData) return;
-
-            let content = `# ${currentData.term}\n\n`;
-
-            // Add Wikidata info
-            if (currentData.wikidata) {
-                content += `## Datos Unificados (Wikidata)\n\n`;
-                const description = currentData.wikidata.descriptions?.es?.value ||
-                                   currentData.wikidata.descriptions?.en?.value || '';
-                if (description) content += `${description}\n\n`;
-            }
-
-            // Add all language summaries
-            content += `## Información por Idioma (${currentData.languages.length} idiomas)\n\n`;
-
-            currentData.languages.forEach(lang => {
-                content += `### ${lang.langName} (${lang.lang})\n`;
-                content += `**Título:** ${lang.title}\n\n`;
-                content += `${lang.summary}\n\n`;
-                content += `---\n\n`;
-            });
-
-            navigator.clipboard.writeText(content).then(() => {
-                showCopyNotification(`✓ Copiado: ${currentData.languages.length} idiomas`);
-            });
-        }
-
-        function expandAll() {
-            document.querySelectorAll('.language-item').forEach(item => {
-                item.classList.add('expanded');
-            });
-        }
-
-        function collapseAll() {
-            document.querySelectorAll('.language-item').forEach(item => {
-                item.classList.remove('expanded');
-            });
-        }
-
-        function sortLanguages() {
-            const sortBy = sortSelect.value;
-            let sorted = [...allLanguagesData];
-
-            switch (sortBy) {
-                case 'length-desc':
-                    sorted.sort((a, b) => b.charCount - a.charCount);
-                    break;
-                case 'length-asc':
-                    sorted.sort((a, b) => a.charCount - b.charCount);
-                    break;
-                case 'alpha':
-                    sorted.sort((a, b) => a.langName.localeCompare(b.langName));
-                    break;
-            }
-
-            renderLanguageList(sorted);
-        }
-
-        function filterLanguages() {
-            const filter = filterInput.value.toLowerCase();
-            document.querySelectorAll('.language-item').forEach(item => {
-                const langName = item.querySelector('.lang-name').textContent.toLowerCase();
-                const langCode = item.querySelector('.lang-code').textContent.toLowerCase();
-                const title = item.querySelector('.lang-title').textContent.toLowerCase();
-
-                const matches = langName.includes(filter) ||
-                               langCode.includes(filter) ||
-                               title.includes(filter);
-
-                item.style.display = matches ? '' : 'none';
-            });
+            setTimeout(() => copyNotification.classList.remove('visible'), 2000);
         }
 
         // ============ EVENT LISTENERS ============
         searchBtn.addEventListener('click', search);
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') search();
-        });
-        sortSelect.addEventListener('change', sortLanguages);
-        filterInput.addEventListener('input', filterLanguages);
-        expandAllBtn.addEventListener('click', expandAll);
-        collapseAllBtn.addEventListener('click', collapseAll);
-        copyAllBtn.addEventListener('click', copyAllContent);
+        fullAnalysisBtn.addEventListener('click', runFullAnalysis);
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') search(); });
 
-        // Focus search on load
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+        });
+
+        document.getElementById('expandAllBtn').addEventListener('click', expandAll);
+        document.getElementById('collapseAllBtn').addEventListener('click', collapseAll);
+        document.getElementById('copyAllBtn').addEventListener('click', copyAllContent);
+
+        sortSelect.addEventListener('change', () => {
+            if (!fullAnalysisData) return;
+            const languages = [...fullAnalysisData.languages];
+            const sortBy = sortSelect.value;
+
+            switch (sortBy) {
+                case 'sections-desc': languages.sort((a, b) => b.sections.length - a.sections.length); break;
+                case 'length-desc': languages.sort((a, b) => b.totalChars - a.totalChars); break;
+                case 'alpha': languages.sort((a, b) => a.langName.localeCompare(b.langName)); break;
+            }
+
+            fullAnalysisData.languages = languages;
+            displayFullAnalysis(fullAnalysisData);
+        });
+
+        filterInput.addEventListener('input', () => {
+            const filter = filterInput.value.toLowerCase();
+            document.querySelectorAll('.language-item').forEach(item => {
+                const name = item.querySelector('.lang-name')?.textContent.toLowerCase() || '';
+                const code = item.querySelector('.lang-code')?.textContent.toLowerCase() || '';
+                item.style.display = (name.includes(filter) || code.includes(filter)) ? '' : 'none';
+            });
+        });
+
         searchInput.focus();
     </script>
 </body>
