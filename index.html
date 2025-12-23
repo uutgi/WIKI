@@ -769,6 +769,36 @@
     </footer>
 
     <script>
+        // ============ ALLOWED LANGUAGES (Latin alphabet + Greek) ============
+        const ALLOWED_LANGUAGES = new Set([
+            // Major Western languages
+            'en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'pl', 'sv', 'da', 'no', 'fi',
+            // Romance languages
+            'ca', 'gl', 'ro', 'oc', 'an', 'ast', 'ext', 'fur', 'lad', 'lij', 'lmo',
+            'nap', 'pms', 'rm', 'sc', 'scn', 'vec', 'wa',
+            // Germanic languages
+            'af', 'als', 'bar', 'cy', 'fy', 'gd', 'is', 'lb', 'li', 'nds', 'nn', 'sco', 'vls',
+            // Celtic languages
+            'br', 'ga', 'gv', 'kw',
+            // Baltic languages
+            'lt', 'lv',
+            // Slavic with Latin script
+            'cs', 'sk', 'sl', 'hr', 'bs', 'pl',
+            // Finno-Ugric with Latin script
+            'et', 'hu',
+            // Other Latin-script languages
+            'eu', 'mt', 'sq', 'tr', 'az', 'uz', 'tk', 'sw', 'id', 'ms', 'tl', 'ceb', 'vi',
+            'eo', 'io', 'ia', 'ie', 'vo', 'la',
+            // Simple English
+            'simple',
+            // Greek (exception requested by user)
+            'el'
+        ]);
+
+        function isAllowedLanguage(code) {
+            return ALLOWED_LANGUAGES.has(code);
+        }
+
         // ============ STATE ============
         let currentData = null;
         let fullAnalysisData = null;
@@ -1010,7 +1040,12 @@
                 const pageId = Object.keys(pages)[0];
                 const langlinks = pages[pageId]?.langlinks || [];
                 const result = {};
-                langlinks.forEach(ll => { result[ll.lang] = ll['*']; });
+                // Filter only allowed languages (Latin alphabet + Greek)
+                langlinks.forEach(ll => {
+                    if (isAllowedLanguage(ll.lang)) {
+                        result[ll.lang] = ll['*'];
+                    }
+                });
                 return result;
             } catch (error) { return {}; }
         }
@@ -1466,18 +1501,26 @@
         function getLanguageName(code) {
             const names = {
                 'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch',
-                'it': 'Italiano', 'pt': 'Português', 'ru': 'Русский', 'ja': '日本語',
-                'zh': '中文', 'ar': 'العربية', 'ko': '한국어', 'nl': 'Nederlands',
-                'pl': 'Polski', 'sv': 'Svenska', 'uk': 'Українська', 'vi': 'Tiếng Việt',
-                'ca': 'Català', 'fi': 'Suomi', 'cs': 'Čeština', 'ro': 'Română',
-                'hu': 'Magyar', 'el': 'Ελληνικά', 'da': 'Dansk', 'he': 'עברית',
-                'no': 'Norsk', 'id': 'Bahasa Indonesia', 'th': 'ไทย', 'tr': 'Türkçe',
-                'fa': 'فارسی', 'hi': 'हिन्दी', 'bn': 'বাংলা', 'la': 'Latina',
-                'eu': 'Euskara', 'gl': 'Galego', 'hr': 'Hrvatski', 'sk': 'Slovenčina',
-                'sr': 'Српски', 'bg': 'Български', 'lt': 'Lietuvių', 'sl': 'Slovenščina',
-                'et': 'Eesti', 'lv': 'Latviešu', 'ms': 'Bahasa Melayu', 'simple': 'Simple English',
-                'eo': 'Esperanto', 'cy': 'Cymraeg', 'ga': 'Gaeilge', 'af': 'Afrikaans',
-                'sw': 'Kiswahili', 'ta': 'தமிழ்', 'te': 'తెలుగు', 'ml': 'മലയാളം'
+                'it': 'Italiano', 'pt': 'Português', 'nl': 'Nederlands',
+                'pl': 'Polski', 'sv': 'Svenska', 'da': 'Dansk', 'no': 'Norsk', 'fi': 'Suomi',
+                'ca': 'Català', 'gl': 'Galego', 'ro': 'Română', 'oc': 'Occitan',
+                'eu': 'Euskara', 'la': 'Latina', 'el': 'Ελληνικά',
+                'cs': 'Čeština', 'sk': 'Slovenčina', 'sl': 'Slovenščina',
+                'hr': 'Hrvatski', 'bs': 'Bosanski', 'sq': 'Shqip',
+                'hu': 'Magyar', 'et': 'Eesti', 'lt': 'Lietuvių', 'lv': 'Latviešu',
+                'is': 'Íslenska', 'ga': 'Gaeilge', 'cy': 'Cymraeg', 'gd': 'Gàidhlig',
+                'br': 'Brezhoneg', 'af': 'Afrikaans', 'mt': 'Malti',
+                'tr': 'Türkçe', 'az': 'Azərbaycan', 'id': 'Bahasa Indonesia',
+                'ms': 'Bahasa Melayu', 'sw': 'Kiswahili', 'tl': 'Tagalog',
+                'vi': 'Tiếng Việt', 'eo': 'Esperanto', 'simple': 'Simple English',
+                'lb': 'Lëtzebuergesch', 'fy': 'Frysk', 'nn': 'Nynorsk',
+                'nds': 'Plattdüütsch', 'als': 'Alemannisch', 'bar': 'Boarisch',
+                'an': 'Aragonés', 'ast': 'Asturianu', 'ext': 'Extremeñu',
+                'nap': 'Napulitano', 'scn': 'Sicilianu', 'vec': 'Vèneto',
+                'lmo': 'Lombard', 'pms': 'Piemontèis', 'fur': 'Furlan',
+                'lij': 'Ligure', 'sc': 'Sardu', 'wa': 'Walon', 'rm': 'Rumantsch',
+                'sco': 'Scots', 'gv': 'Gaelg', 'kw': 'Kernowek',
+                'ceb': 'Cebuano', 'io': 'Ido', 'ia': 'Interlingua', 'vo': 'Volapük'
             };
             return names[code] || code.toUpperCase();
         }
